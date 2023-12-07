@@ -1,0 +1,17 @@
+{
+	"name": "plugin",
+	"version": "0.0.1",
+	"private": true,
+	"description": "",
+	"scripts": {
+		"build": "rbxtsc",
+		"watch": "rbxtsc -w"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"@rbxts/compiler-types": "^2.2.0-types.0",
+		"@rbxts/types": "^1.0.737",
+		"roblox-ts": "^2.2.0",
+		"typescript": "^5.3.3"
+	}
+}

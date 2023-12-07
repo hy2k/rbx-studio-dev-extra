@@ -1,7 +1,6 @@
 {
-	"include": ["src/**/*"],
+	"exclude": ["node_modules"],
 	"compilerOptions": {
-		"rootDir": "./src",
 		"declaration": false,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
@@ -9,12 +8,19 @@
 		"moduleResolution": "Node",
 		"noUncheckedIndexedAccess": true,
 		"resolveJsonModule": true,
-		"skipLibCheck": true,
 		"sourceMap": false,
-		"strict": true,
 		"target": "es2022",
 		"lib": ["es2022"],
 		"types": ["node"],
-		"outDir": "./dist"
+
+		"strict": true,
+		"allowJs": false,
+		"skipLibCheck": true,
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+
+		// Let eslint report this
+		"noUnusedLocals": false,
+		"noUnusedParameters": false
 	}
 }

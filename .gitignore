@@ -11,6 +11,8 @@ node_modules/
 
 # TypeScript
 dist/
+out/
+include/
 *.tsbuildinfo
 
 # Optional npm cache directory
