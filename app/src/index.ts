@@ -1,6 +1,7 @@
-import * as fs from 'fs/promises';
+import * as fs from 'node:fs/promises';
 
 import { program } from 'commander';
+import { startServer } from './server.js';
 
 interface CLIOptions {
 	readonly placePath: string;
@@ -27,21 +28,16 @@ async function validateOptions(options: CLIOptions) {
 	}
 }
 
-async function run() {
-	program.parse();
+program.parse();
 
-	const options: CLIOptions = program.opts();
+const options: CLIOptions = program.opts();
 
-	await validateOptions(options);
+await validateOptions(options);
 
-	console.log(options);
-}
+startServer().then(async () => {
+	const response = await fetch('http://127.0.0.1:3000/');
 
-run()
-	.then(() => {
-		process.exit();
-	})
-	.catch((err) => {
-		console.error(err);
-		process.exit(1);
-	});
+	console.log(await response.json());
+});
+
+console.log(options);
