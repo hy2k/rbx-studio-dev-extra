@@ -36,3 +36,7 @@ include/
 
 # Local setting
 .vscode/settings.json
+
+# Roblox
+*.rbxm*
+*.rbxl*
