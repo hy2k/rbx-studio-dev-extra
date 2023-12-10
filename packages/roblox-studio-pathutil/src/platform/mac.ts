@@ -1,7 +1,7 @@
 import { homedir } from 'node:os';
 import path from 'node:path';
 
-import type { RobloxStudioPath } from '../util';
+import type { RobloxStudioPath } from '../type.js';
 
 export function getRobloxStudioRootMac() {
 	// FIXME: This is not tested

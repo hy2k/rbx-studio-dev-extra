@@ -1,4 +1,4 @@
-import type { RobloxStudioPath } from './util.js';
+import type { RobloxStudioPath } from './type.js';
 
 import { PlatformNotSupportedError } from './errors.js';
 import { getRobloxStudioPathMac, getRobloxStudioRootMac } from './platform/mac.js';

@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import { homedir } from 'node:os';
 import path from 'node:path';
 
-import type { RobloxStudioPath } from '../util.js';
+import type { RobloxStudioPath } from '../type.js';
 
 import { InvalidStudioRootError, StudioNotFoundError } from '../errors.js';
 
