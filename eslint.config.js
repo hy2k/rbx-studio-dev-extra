@@ -186,7 +186,7 @@ const stylisticPreferences = {
 /** @type {import("eslint").Linter.FlatConfig[]} */
 export default [
 	{
-		files: ['**/*.ts', '**/*.js'],
+		files: ['**/*.ts', '**/*.js', '**/*.mjs'],
 		ignores: ['**/node_modules/*', '**/out/*', '**/dist/**'],
 		plugins: {
 			import: importPlugin,
