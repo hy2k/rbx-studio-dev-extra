@@ -1,16 +1,16 @@
 {
 	"name": "roblox-studio-pathutil",
 	"description": "A utility for finding the path to Roblox Studio",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"type": "module",
-	"main": "build/index.js",
+	"main": "dist/index.js",
 	"files": [
-		"build"
+		"dist"
 	],
 	"scripts": {
 		"build:dev": "tsc",
 		"watch:dev": "tsc -w",
-		"clean": "rimraf build",
+		"clean": "rimraf dist",
 		"test": "node --test",
 		"test:watch": "node --test --watch",
 		"build": "npm run clean && tsc -p tsconfig.build.json"

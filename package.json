@@ -25,6 +25,7 @@
 		"tabWidth": 4
 	},
 	"scripts": {
+		"fix": "eslint --fix \"**/*.{ts,json}\"",
 		"format": "prettier --write \"**/*.{ts,json}\""
 	}
 }

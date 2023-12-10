@@ -187,7 +187,7 @@ const stylisticPreferences = {
 export default [
 	{
 		files: ['**/*.ts', '**/*.js'],
-		ignores: ['**/node_modules/*', '**/dist/*', '**/out/*'],
+		ignores: ['**/node_modules/*', '**/out/*', '**/dist/**'],
 		plugins: {
 			import: importPlugin,
 			perfectionist: perfectionistPlugin,

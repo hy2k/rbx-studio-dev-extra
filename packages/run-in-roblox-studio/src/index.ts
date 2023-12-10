@@ -1,14 +1,14 @@
+import { program } from 'commander';
+import { spawn } from 'node:child_process';
 import * as fs from 'node:fs/promises';
 
-import { program } from 'commander';
 import { startServer } from './server.js';
-import { spawn } from 'node:child_process';
 
 interface CLIOptions {
 	readonly placePath: string;
+	readonly pluginsPath: string;
 	readonly scriptPath: string;
 	readonly studioPath: string;
-	readonly pluginsPath: string;
 }
 
 program
