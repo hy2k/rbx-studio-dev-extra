@@ -8,11 +8,13 @@
 		"packages/*"
 	],
 	"devDependencies": {
+		"@eslint/js": "^8.55.0",
 		"@typescript-eslint/eslint-plugin": "^6.13.2",
 		"@typescript-eslint/parser": "^6.13.2",
 		"eslint": "^8.55.0",
+		"eslint-plugin-import": "^2.29.0",
+		"eslint-plugin-perfectionist": "^2.5.0",
 		"eslint-plugin-roblox-ts": "^0.0.36",
-		"@eslint/js": "^8.55.0",
 		"prettier": "^3.1.0"
 	},
 	"prettier": {
