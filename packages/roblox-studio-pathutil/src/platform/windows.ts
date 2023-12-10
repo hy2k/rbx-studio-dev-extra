@@ -4,20 +4,20 @@ import path from 'node:path';
 
 import type { RobloxStudioPath } from '../type.js';
 
-import { InvalidStudioRootError, StudioNotFoundError } from '../errors.js';
+import { InvalidStudioRootError, StudioNotInstalledError } from '../errors.js';
 
-async function findRobloxStudioExe(studioRoot: string) {
-	const versionsPath = path.join(studioRoot, 'Versions');
+async function getVersions(studioRoot: string) {
 	try {
-		await fs.access(versionsPath);
+		return await fs.readdir(path.join(studioRoot, 'Versions'));
 	} catch (err) {
-		throw new InvalidStudioRootError('Roblox Studio root path is invalid', {
+		throw new InvalidStudioRootError('Versions directory does not exist', {
 			cause: err,
 		});
 	}
-	const versions = await fs.readdir(path.join(studioRoot, 'Versions'));
+}
 
-	for (const version of versions) {
+async function findRobloxStudioExe(studioRoot: string) {
+	for (const version of await getVersions(studioRoot)) {
 		const exe = path.join(studioRoot, 'Versions', version, 'RobloxStudioBeta.exe');
 
 		try {
@@ -29,7 +29,7 @@ async function findRobloxStudioExe(studioRoot: string) {
 		return exe;
 	}
 
-	throw new StudioNotFoundError('Roblox Studio executable is not found');
+	throw new StudioNotInstalledError('Roblox Studio is not installed');
 }
 
 export async function getRobloxStudioPathWindows(studioRoot: string): Promise<RobloxStudioPath> {

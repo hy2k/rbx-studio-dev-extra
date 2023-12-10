@@ -1,18 +1,25 @@
-export class PlatformNotSupportedError extends Error {
+export class RbxStudioPathError extends Error {
+	constructor(string?: string, options?: ErrorOptions) {
+		super(string, options);
+		this.name = 'RbxStudioPathError';
+	}
+}
+
+export class PlatformNotSupportedError extends RbxStudioPathError {
 	constructor(string?: string, options?: ErrorOptions) {
 		super(string, options);
 		this.name = 'PlatformNotSupportedError';
 	}
 }
 
-export class StudioNotFoundError extends Error {
+export class StudioNotInstalledError extends RbxStudioPathError {
 	constructor(string?: string, options?: ErrorOptions) {
 		super(string, options);
-		this.name = 'StudioNotFoundError';
+		this.name = 'StudioNotInstalledError';
 	}
 }
 
-export class InvalidStudioRootError extends Error {
+export class InvalidStudioRootError extends RbxStudioPathError {
 	constructor(string?: string, options?: ErrorOptions) {
 		super(string, options);
 		this.name = 'InvalidStudioRootError';
