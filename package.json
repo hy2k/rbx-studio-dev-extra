@@ -11,6 +11,7 @@
 		"@eslint/js": "^8.55.0",
 		"@typescript-eslint/eslint-plugin": "^6.13.2",
 		"@typescript-eslint/parser": "^6.13.2",
+		"concurrently": "^8.2.2",
 		"eslint": "^8.55.0",
 		"eslint-plugin-import": "^2.29.0",
 		"eslint-plugin-perfectionist": "^2.5.0",
@@ -25,6 +26,9 @@
 		"tabWidth": 4
 	},
 	"scripts": {
+		"dev": "concurrently -c auto \"npm:dev:*\"",
+		"dev:plugin": "npm run --workspace plugin dev",
+		"dev:cli": "npm run --workspace run-in-roblox-studio dev",
 		"fix": "eslint --fix \"**/*.{ts,json}\"",
 		"format": "prettier --write \"**/*.{ts,json}\""
 	}

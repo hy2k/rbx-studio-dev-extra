@@ -40,10 +40,11 @@ setInterval(() => {
 			}
 
 			try {
-				await fs.copyFile(pluginPath, robloxStudioPath.plugins);
+				await fs.copyFile(pluginPath, path.join(robloxStudioPath.plugins, DEV_PLUGIN_NAME));
 				console.log(`️Copied ${DEV_PLUGIN_NAME} to Roblox Plugins folder.`);
-			} catch {
-				console.log(`️Failed to copy ${DEV_PLUGIN_NAME}.`);
+			} catch (err) {
+				console.error(`️Failed to copy ${DEV_PLUGIN_NAME}`);
+				console.error(err);
 			} finally {
 				debounce = true;
 			}

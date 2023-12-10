@@ -3,8 +3,8 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"build": "tsc",
-		"watch": "tsc -w"
+		"dev": "tsc -w",
+		"build": "tsc"
 	},
 	"license": "MIT",
 	"devDependencies": {
