@@ -3,7 +3,6 @@
 	"compilerOptions": {
 		"declaration": true,
 		"stripInternal": true,
-		"removeComments": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"module": "ESNext",
