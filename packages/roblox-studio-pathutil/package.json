@@ -9,7 +9,7 @@
 	],
 	"scripts": {
 		"build:dev": "tsc",
-		"watch:dev": "tsc -w",
+		"watch:dev": "tsc -w --preserveWatchOutput",
 		"clean": "rimraf dist",
 		"test": "node --test",
 		"test:watch": "node --test --watch",

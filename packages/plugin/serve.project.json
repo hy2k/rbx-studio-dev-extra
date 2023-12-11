@@ -2,15 +2,6 @@
 	"name": "run-in-roblox-studio-place",
 	"globIgnorePaths": ["**/package.json", "**/tsconfig.json"],
 	"tree": {
-		"$className": "DataModel",
-		"ServerStorage": {
-			"$className": "ServerStorage",
-			"run-in-roblox-studio": {
-				"$properties": {
-					"Enabled": false
-				},
-				"$path": "./default.project.json"
-			}
-		}
+		"$className": "DataModel"
 	}
 }

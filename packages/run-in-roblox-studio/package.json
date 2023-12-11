@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "tsc -w",
+		"dev": "tsc -w --preserveWatchOutput",
 		"build": "tsc"
 	},
 	"license": "MIT",

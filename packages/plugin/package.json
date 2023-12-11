@@ -7,10 +7,8 @@
 		"dev": "concurrently -c auto \"npm:watch:*\" \"npm:serve\"",
 		"serve": "rojo serve serve.project.json",
 		"build:ts": "rbxtsc --type model",
-		"build:rbxm": "rojo build -o ./run-in-roblox-studio-dev.rbxm",
 		"build:rbxl": "rojo build serve.project.json -o ./serve.rbxl",
 		"watch:ts": "npm run build:ts -- --watch",
-		"watch:rbxm": "npm run build:rbxm -- --watch",
 		"watch:rbxl": "npm run build:rbxl -- --watch",
 		"watch:plugin": "node ./scripts/watch-plugin.mjs"
 	},
@@ -19,6 +17,7 @@
 		"@rbxts/compiler-types": "^2.2.0-types.0",
 		"@rbxts/types": "^1.0.737",
 		"concurrently": "^8.2.2",
+		"execa": "^8.0.1",
 		"roblox-studio-pathutil": "^0.0.3",
 		"roblox-ts": "^2.2.0",
 		"typescript": "^5.3.3"
