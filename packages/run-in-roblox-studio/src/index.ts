@@ -31,8 +31,10 @@ const options: CLIOptions = program.opts();
 await validateOptions(options);
 await launchRobloxStudio(options.placePath);
 
+const SERVER_URL = 'http://127.0.0.1:3000';
+
 startServer().then(async () => {
-	const response = await fetch('http://127.0.0.1:3000/');
+	const response = await fetch(SERVER_URL);
 
 	console.log(await response.json());
 });

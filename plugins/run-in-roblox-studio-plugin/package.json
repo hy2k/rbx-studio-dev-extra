@@ -5,9 +5,11 @@
 	"description": "",
 	"scripts": {
 		"dev": "concurrently -c auto \"npm:watch:*\" \"npm:serve\"",
+		"predev": "concurrently -c auto -m 1 \"npm:build:*\" \"npm:open\"",
 		"serve": "rojo serve serve.project.json",
 		"build:ts": "rbxtsc --type model",
 		"build:rbxl": "rojo build serve.project.json -o ./serve.rbxl",
+		"open": "open-rbxl ./serve.rbxl",
 		"watch:ts": "npm run build:ts -- --watch",
 		"watch:rbxl": "npm run build:rbxl -- --watch",
 		"watch:plugin": "node ./scripts/watch-plugin.mjs"
@@ -18,8 +20,12 @@
 		"@rbxts/types": "^1.0.737",
 		"concurrently": "^8.2.2",
 		"execa": "^8.0.1",
+		"open-rbxl": "^0.0.3",
 		"roblox-studio-pathutil": "^0.0.3",
 		"roblox-ts": "^2.2.0",
 		"typescript": "^5.3.3"
+	},
+	"dependencies": {
+		"@rbxts/services": "^1.5.1"
 	}
 }

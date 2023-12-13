@@ -27,8 +27,8 @@
 	},
 	"scripts": {
 		"dev": "concurrently -c auto \"npm:dev:*\"",
-		"dev:plugin": "npm run --workspace plugin dev",
-		"dev:cli": "npm run --workspace run-in-roblox-studio dev",
+		"dev:run-in-roblox-studio-plugin": "npm run -prefix plugins/run-in-roblox-studio-plugin dev",
+		"dev:run-in-roblox-studio": "npm run --workspace run-in-roblox-studio dev",
 		"fix": "eslint --fix \"**/*.{ts,mjs,json}\"",
 		"format": "prettier --write \"**/*.{ts,json}\""
 	}

@@ -16,12 +16,7 @@
 		"moduleDetection": "force",
 		"strict": true,
 		"target": "ESNext",
-		"typeRoots": [
-			"../../node_modules/@rbxts",
-
-			// Roblox-Ts compiler does not understand the mono repo setup, so this line is needed
-			"node_modules/@rbxts"
-		],
+		"typeRoots": ["node_modules/@rbxts"],
 
 		// configurable
 		"types": ["types/plugin"],
