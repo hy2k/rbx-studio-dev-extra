@@ -5,9 +5,10 @@
 	"type": "module",
 	"main": "dist/index.js",
 	"bin": {
-		"open-rbxl": "dist/cli.js"
+		"open-rbxl": "bin/cli.mjs"
 	},
 	"files": [
+		"bin",
 		"dist",
 		"!**/*.test.*"
 	],

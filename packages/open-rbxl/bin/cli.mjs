@@ -1,7 +1,11 @@
+#!/usr/bin/env node
+
+// @ts-check
+
 import { cli } from 'cleye';
 
+import { open } from '../dist/index.js';
 import pkg from '../package.json' with { type: 'json' };
-import { open } from './index.js';
 
 const argv = cli({
 	flags: {
