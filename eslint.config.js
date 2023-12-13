@@ -101,14 +101,6 @@ const stylisticPreferences = {
 	'perfectionist/sort-imports': [
 		'warn',
 		{
-			'newlines-between': 'always',
-			order: 'asc',
-			type: 'natural',
-		},
-	],
-	'perfectionist/sort-imports': [
-		'warn',
-		{
 			groups: [
 				'type',
 				['builtin', 'external'],

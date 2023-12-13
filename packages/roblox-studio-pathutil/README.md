@@ -1,5 +1,8 @@
 # roblox-studio-pathutil
 
+> [!NOTE]  
+> This package is ESM-only.
+
 ## Install
 
 ```bash
@@ -7,8 +10,6 @@ npm install roblox-studio-pathutil
 ```
 
 ## Usage
-
-ESM only
 
 ```js
 import { getRobloxStudioPath } from 'roblox-studio-pathutil';

@@ -78,5 +78,5 @@ export async function open(
 		}
 	}
 
-	_spawnFn(placePath);
+	await _spawnFn(placePath);
 }
