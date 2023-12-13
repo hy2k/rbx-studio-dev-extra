@@ -43,3 +43,4 @@ include/
 # Roblox
 *.rbxm*
 *.rbxl*
+!**/fixtures/*.rbxl

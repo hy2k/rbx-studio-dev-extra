@@ -3,6 +3,10 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { getRobloxStudioPath } from 'roblox-studio-pathutil';
 
+import { OpenRbxlError } from './errors.js';
+
+export * from './errors.js';
+
 const ENV_VAR_ROBLOX_STUDIO_PATH = 'ROBLOX_STUDIO_PATH';
 
 async function checkStudioOpen(placePath: string): Promise<boolean> {
@@ -48,24 +52,28 @@ export interface RbxlOptions {
 	 * Defaults to `false`.
 	 */
 	force?: boolean;
-
-	/**
-	 * Print verbose output.
-	 *
-	 * Defaults to `false`.
-	 */
-	verbose?: boolean;
 }
 
 export async function open(
 	placePath: string,
-	{ _spawnFn = spawnRobloxStudio, checkFn = checkStudioOpen, force = false, verbose = false }: RbxlOptions,
+	{ _spawnFn = spawnRobloxStudio, checkFn = checkStudioOpen, force = false }: RbxlOptions,
 ) {
+	// Check if the place file exists
+	try {
+		const stat = await fs.stat(placePath);
+		if (!stat.isFile()) {
+			throw new OpenRbxlError('Not a file');
+		}
+	} catch (err) {
+		if (err instanceof OpenRbxlError) {
+			throw err;
+		}
+		throw new OpenRbxlError(`Invalid place path`, { cause: err });
+	}
+
 	if (!force) {
 		if (await checkFn(placePath)) {
-			if (verbose) {
-				console.log('Roblox Studio is already open');
-			}
+			console.warn('[open-rbxl] Roblox Studio is already open');
 			return;
 		}
 	}
