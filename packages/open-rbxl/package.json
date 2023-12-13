@@ -8,7 +8,8 @@
 		"open-rbxl": "dist/cli.js"
 	},
 	"files": [
-		"dist"
+		"dist",
+		"!**/*.test.*"
 	],
 	"scripts": {
 		"build": "tsc",
@@ -16,7 +17,7 @@
 		"clean": "rimraf dist",
 		"test": "node --test",
 		"test:watch": "node --test --watch",
-		"prepack": "npm run clean && tsc -p tsconfig.build.json",
+		"prepack": "npm run clean && tsc",
 		"prepublishOnly": "npm run test"
 	},
 	"license": "MIT",
