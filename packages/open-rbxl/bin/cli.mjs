@@ -28,6 +28,6 @@ const argv = cli({
 	version: pkg.version,
 });
 
-await open(argv._.rbxlFile, {
+open(argv._.rbxlFile, {
 	force: argv.flags.force,
 });

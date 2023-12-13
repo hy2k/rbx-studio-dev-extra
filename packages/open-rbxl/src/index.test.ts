@@ -54,15 +54,15 @@ describe('open-rbxl', () => {
 
 	it('should throw when place file does not exist', () => {
 		assert.rejects(() => open('./fixtures/does-not-exist.rbxl', options), {
-			name: OpenRbxlError.name,
 			message: 'Invalid place path',
+			name: OpenRbxlError.name,
 		});
 	});
 
 	it("should throw when place file isn't a file", () => {
 		assert.rejects(() => open('./fixtures', options), {
-			name: OpenRbxlError.name,
 			message: 'Not a file',
+			name: OpenRbxlError.name,
 		});
 	});
 });

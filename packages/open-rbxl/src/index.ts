@@ -23,12 +23,15 @@ async function checkStudioOpen(placePath: string): Promise<boolean> {
 	}
 	return false;
 }
-
 async function spawnRobloxStudio(placePath: string) {
 	const robloxStudioRoot = process.env[ENV_VAR_ROBLOX_STUDIO_PATH];
 	const robloxStudioPath = await getRobloxStudioPath(robloxStudioRoot ? path.resolve(robloxStudioRoot) : undefined);
 
-	spawn(robloxStudioPath.application, [placePath]);
+	const child = spawn(robloxStudioPath.application, [placePath], {
+		detached: true,
+		stdio: 'ignore',
+	});
+	child.unref();
 }
 
 export interface RbxlOptions {
@@ -78,5 +81,5 @@ export async function open(
 		}
 	}
 
-	await _spawnFn(placePath);
+	_spawnFn(placePath);
 }

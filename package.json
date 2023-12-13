@@ -29,7 +29,7 @@
 		"dev": "concurrently -c auto \"npm:dev:*\"",
 		"dev:plugin": "npm run --workspace plugin dev",
 		"dev:cli": "npm run --workspace run-in-roblox-studio dev",
-		"fix": "eslint --fix \"**/*.{ts,json}\"",
+		"fix": "eslint --fix \"**/*.{ts,mjs,json}\"",
 		"format": "prettier --write \"**/*.{ts,json}\""
 	}
 }
