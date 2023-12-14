@@ -1,6 +1,6 @@
 // @ts-check
 
-// Cross platform watch script for rojo plugins
+// Workaround for `rojo build -p` for WSL
 
 import { $ } from 'execa';
 import path from 'node:path';

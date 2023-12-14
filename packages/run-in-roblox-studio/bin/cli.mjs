@@ -52,4 +52,7 @@ if (!placePath || !scriptPath) {
 	process.exit(1);
 }
 
-start({ port: port });
+start({
+	port: port,
+	placePath: placePath,
+});
