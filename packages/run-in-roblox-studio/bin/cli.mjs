@@ -53,6 +53,7 @@ if (!placePath || !scriptPath) {
 }
 
 start({
-	port: port,
 	placePath: placePath,
+	port: port,
+	scriptPath: scriptPath,
 });

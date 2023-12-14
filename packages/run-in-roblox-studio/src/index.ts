@@ -1,13 +1,16 @@
+import * as fs from 'fs/promises';
 import { open } from 'open-rbxl';
 
 import { server } from './server.js';
+import { store } from './store.js';
 
 interface StartOptions {
-	port: number;
 	placePath: string;
+	port: number;
+	scriptPath: string;
 }
 
-export async function start({ placePath, port }: StartOptions) {
+export async function start({ placePath, port, scriptPath }: StartOptions) {
 	try {
 		await server.listen({ port: port });
 	} catch (err) {
@@ -16,5 +19,6 @@ export async function start({ placePath, port }: StartOptions) {
 
 	open(placePath, {});
 
-	console.log("It's running!");
+	const luaSource = await fs.readFile(scriptPath, 'utf8');
+	store.luaSource = luaSource;
 }

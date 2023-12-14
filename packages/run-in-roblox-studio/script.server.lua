@@ -1,1 +1,2 @@
-print("Test script")
+-- Test script
+print("Dev server is working!")
