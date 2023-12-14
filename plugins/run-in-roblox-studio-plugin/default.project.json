@@ -1,6 +1,7 @@
 {
 	"name": "run-in-roblox-studio",
 	"globIgnorePaths": ["**/package.json", "**/tsconfig.json"],
+	"emitLegacyScripts": true,
 	"tree": {
 		"$path": "out",
 		"include": {

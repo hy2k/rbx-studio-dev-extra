@@ -5,9 +5,7 @@
 	"description": "",
 	"scripts": {
 		"dev": "concurrently -c auto \"npm:watch:*\"",
-		"build": "concurrently -c auto -m 1 \"npm:build:*\"",
 		"build:ts": "rbxtsc --type model",
-		"build:plugin": "rojo build -o ./run-in-roblox-studio.rbxm",
 		"watch:ts": "npm run build:ts -- --watch",
 		"watch:plugin": "node ./scripts/watch-plugin.mjs"
 	},

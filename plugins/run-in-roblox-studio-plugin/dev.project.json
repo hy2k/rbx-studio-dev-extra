@@ -1,0 +1,14 @@
+{
+	"name": "run-in-roblox-studio-dev",
+	"globIgnorePaths": ["**/package.json", "**/tsconfig.json"],
+	"emitLegacyScripts": true,
+	"tree": {
+		"$path": "./default.project.json",
+		"Debug": {
+			"$className": "BoolValue",
+			"$properties": {
+				"Value": true
+			}
+		}
+	}
+}

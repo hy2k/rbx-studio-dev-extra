@@ -1,10 +1,16 @@
 import { HttpService } from '@rbxts/services';
 import { t } from '@rbxts/t';
 
-let isDev = false;
-
-const DEFAULT_POLL_INTERVAL = 10;
+const PREFIX = '[run-in-roblox-studio]';
+const DEFAULT_POLL_INTERVAL = 5;
 const DEFAULT_PORT = 34567;
+
+const debugConfig = script.Parent?.FindFirstChild('Debug');
+const isDebug = debugConfig?.IsA('BoolValue') ? debugConfig.Value : false;
+
+if (isDebug) {
+	print(PREFIX, 'Started with debug mode enabled');
+}
 
 function createModuleScript(source: string) {
 	const module = new Instance('ModuleScript');
@@ -16,9 +22,9 @@ function createModuleScript(source: string) {
 	return module;
 }
 
-function start(serverUrl: string) {
+function startTask(serverUrl: string) {
 	const response = HttpService.RequestAsync({
-		Method: 'GET',
+		Method: 'POST',
 		Url: `${serverUrl}/start`,
 	});
 
@@ -47,30 +53,37 @@ function start(serverUrl: string) {
 	}
 }
 
+function endTask(serverUrl: string) {
+	const response = HttpService.RequestAsync({
+		Method: 'POST',
+		Url: `${serverUrl}/end`,
+	});
+
+	if (!response.Success) {
+		throw 'Failed to end';
+	}
+}
+
 function poll(serverUrl: string) {
 	const response = HttpService.RequestAsync({
 		Method: 'GET',
 		Url: `${serverUrl}/poll`,
 	});
 
-	const body = HttpService.JSONDecode(response.Body);
-	const bodyCheck = t.strictInterface({
-		isDev: t.boolean,
-	});
-	assert(bodyCheck(body));
-
-	isDev = body.isDev;
-
 	if (!response.Success) {
 		throw 'Failed to poll';
 	}
 }
 
+let isFirstRun = true;
 let isRunning = false;
 
 // eslint-disable-next-line no-constant-condition
 while (true) {
-	task.wait(DEFAULT_POLL_INTERVAL);
+	if (!isFirstRun) {
+		task.wait(DEFAULT_POLL_INTERVAL);
+	}
+	isFirstRun = false;
 
 	if (isRunning) {
 		continue;
@@ -82,21 +95,19 @@ while (true) {
 	try {
 		poll(serverUrl);
 	} catch (err) {
-		if (isDev) {
-			warn(err);
+		if (isDebug) {
+			warn(PREFIX, err);
 		}
-		warn(err);
 		continue;
 	}
 
 	isRunning = true;
 	try {
-		start(serverUrl);
+		startTask(serverUrl);
 	} catch (err) {
-		if (isDev) {
-			warn(err);
+		if (isDebug) {
+			warn(PREFIX, err);
 		}
-		warn(err);
 		isRunning = false;
 		continue;
 	}

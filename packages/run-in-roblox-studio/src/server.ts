@@ -1,6 +1,5 @@
 import Fastify from 'fastify';
 
-import { IS_DEV } from './constants.js';
 import { store } from './store.js';
 
 const fastify = Fastify({
@@ -8,15 +7,25 @@ const fastify = Fastify({
 });
 
 fastify.get('/poll', async (_request, reply) => {
-	return reply.status(200).send({
-		isDev: IS_DEV,
-	});
+	return reply.status(204).send();
 });
 
-fastify.get('/start', async (_request, reply) => {
+fastify.post('/start', async (_request, reply) => {
 	return reply.status(200).send({
 		source: store.luaSource,
 	});
+});
+
+fastify.post('/end', async (_request, reply) => {
+	reply.status(204).send();
+});
+
+fastify.addHook('onSend', async (request) => {
+	if (request.url === '/end' && request.method === 'POST') {
+		process.nextTick(() => {
+			process.exit(0);
+		});
+	}
 });
 
 process.on('SIGINT', () => {
