@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 
+import { IS_DEV } from './constants.js';
 import { store } from './store.js';
 
 const fastify = Fastify({
@@ -7,7 +8,9 @@ const fastify = Fastify({
 });
 
 fastify.get('/poll', async (_request, reply) => {
-	return reply.status(204).send();
+	return reply.status(200).send({
+		isDev: IS_DEV,
+	});
 });
 
 fastify.get('/start', async (_request, reply) => {

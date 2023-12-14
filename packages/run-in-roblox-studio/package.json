@@ -9,12 +9,13 @@
 		"build": "tsc",
 		"dev:ts": "tsc -w --preserveWatchOutput",
 		"dev:rojo": "rojo build -o ./place.rbxl",
-		"start": "node ./bin/cli.mjs --place place.rbxl --script script.server.lua"
+		"start": "cross-env NODE_ENV=development node ./bin/cli.mjs --place place.rbxl --script script.server.lua"
 	},
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^20.10.3",
 		"concurrently": "^8.2.2",
+		"cross-env": "^7.0.3",
 		"typescript": "^5.3.2"
 	},
 	"dependencies": {

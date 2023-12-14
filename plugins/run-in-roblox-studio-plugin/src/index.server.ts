@@ -1,6 +1,8 @@
 import { HttpService } from '@rbxts/services';
 import { t } from '@rbxts/t';
 
+let isDev = false;
+
 const DEFAULT_POLL_INTERVAL = 10;
 const DEFAULT_PORT = 34567;
 
@@ -21,15 +23,13 @@ function start(serverUrl: string) {
 	});
 
 	if (!response.Success) {
-		throw error('Failed to start');
+		throw 'Failed to start';
 	}
 
 	const body = HttpService.JSONDecode(response.Body);
-
 	const bodyCheck = t.strictInterface({
 		source: t.string,
 	});
-
 	assert(bodyCheck(body));
 
 	const { source } = body;
@@ -43,20 +43,26 @@ function start(serverUrl: string) {
 		fn();
 	} else {
 		// This should never happen or error in createModuleScript function
-		throw error('Module did not return a function');
+		throw 'Module did not return a function';
 	}
 }
 
 function poll(serverUrl: string) {
-	print('Polling...');
-
 	const response = HttpService.RequestAsync({
 		Method: 'GET',
 		Url: `${serverUrl}/poll`,
 	});
 
+	const body = HttpService.JSONDecode(response.Body);
+	const bodyCheck = t.strictInterface({
+		isDev: t.boolean,
+	});
+	assert(bodyCheck(body));
+
+	isDev = body.isDev;
+
 	if (!response.Success) {
-		throw error('Failed to poll');
+		throw 'Failed to poll';
 	}
 }
 
@@ -76,6 +82,9 @@ while (true) {
 	try {
 		poll(serverUrl);
 	} catch (err) {
+		if (isDev) {
+			warn(err);
+		}
 		warn(err);
 		continue;
 	}
@@ -84,6 +93,9 @@ while (true) {
 	try {
 		start(serverUrl);
 	} catch (err) {
+		if (isDev) {
+			warn(err);
+		}
 		warn(err);
 		isRunning = false;
 		continue;
