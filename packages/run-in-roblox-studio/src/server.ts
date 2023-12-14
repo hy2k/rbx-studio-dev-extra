@@ -4,18 +4,12 @@ const fastify = Fastify({
 	logger: true,
 });
 
-fastify.get('/', async () => {
-	return { hello: 'world' };
+fastify.get('/poll', async (_request, reply) => {
+	return reply.status(204).send();
 });
 
 process.on('SIGINT', () => {
 	fastify.close();
 });
 
-export async function startServer() {
-	try {
-		await fastify.listen({ port: 3000 });
-	} catch (err) {
-		fastify.log.error(err);
-	}
-}
+export const server = fastify;
