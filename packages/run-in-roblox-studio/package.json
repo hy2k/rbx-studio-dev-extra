@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"bin": {
-		"run-in-roblox-studio": "./bin/run-in-roblox-studio.mjs"
+		"run-in-roblox-studio": "bin/run-in-roblox-studio.mjs"
 	},
 	"files": [
 		"bin",
