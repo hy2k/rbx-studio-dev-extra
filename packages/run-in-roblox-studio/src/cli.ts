@@ -1,17 +1,10 @@
-#!/usr/bin/env node
-
-// @ts-check
-
 import { cli as cleye } from 'cleye';
 import * as fs from 'node:fs';
 
-import { start } from '../dist/index.js';
 import pkg from '../package.json' with { type: 'json' };
+import { start } from './index.js';
 
-/**
- * @param {string} str
- */
-function File(str) {
+function File(str: string) {
 	const stat = fs.statSync(str);
 	if (!stat.isFile()) {
 		throw new Error(`"${str}" is not a file`);

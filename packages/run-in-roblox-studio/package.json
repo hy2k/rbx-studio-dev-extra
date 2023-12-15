@@ -1,15 +1,26 @@
 {
 	"name": "run-in-roblox-studio",
-	"private": true,
 	"version": "0.0.1",
 	"type": "module",
-	"bin": "./bin/cli.mjs",
+	"bin": {
+		"run-in-roblox-studio": "./bin/run-in-roblox-studio.mjs"
+	},
+	"files": [
+		"bin",
+		"dist",
+		"!**/*.test.*"
+	],
 	"scripts": {
+		"start": "cross-env NODE_ENV=development node ./bin/run-in-roblox-studio.mjs --place place.rbxl --script script.server.lua",
 		"dev": "concurrently -c auto \"npm:dev:*\"",
 		"build": "tsc",
 		"dev:ts": "tsc -w --preserveWatchOutput",
 		"dev:rojo": "rojo build -o ./place.rbxl",
-		"start": "cross-env NODE_ENV=development node ./bin/cli.mjs --place place.rbxl --script script.server.lua"
+		"clean": "rimraf dist",
+		"test": "node --test",
+		"test:watch": "node --test --watch",
+		"prepack": "npm run clean && tsc",
+		"prepublishOnly": "npm run test"
 	},
 	"license": "MIT",
 	"devDependencies": {
