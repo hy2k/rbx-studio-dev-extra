@@ -1,5 +1,3 @@
-/* eslint-disable import/no-default-export */
-
 import eslint from '@eslint/js';
 import typescriptPlugin from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
@@ -8,7 +6,9 @@ import perfectionistPlugin from 'eslint-plugin-perfectionist';
 import robloxTsPlugin from 'eslint-plugin-roblox-ts';
 import path from 'node:path';
 
-const robloxTsPath = './packages/plugin';
+const ignores = ['**/node_modules/*', '**/dist/**', '**/out/**'];
+
+const robloxTsPath = './packages/plugins';
 
 /** @type  {import("eslint").Linter.FlatConfig} */
 const robloxTsConfig = {
@@ -39,22 +39,31 @@ const robloxTsConfig = {
 	},
 };
 
-/** @type  {import("eslint").Linter.RulesRecord} */
-const stylisticPreferences = {
-	curly: ['warn', 'all'],
-	'function-paren-newline': ['warn', 'multiline-arguments'],
-	'import/max-dependencies': [
-		'warn',
-		{
-			ignoreTypeImports: true,
-			max: 20,
-		},
-	],
-	'import/no-default-export': 'warn',
+/** @type  {import("eslint").Linter.FlatConfig} */
+const importConfig = {
+	files: ['**/*.ts'],
+	ignores: ignores,
+	plugins: {
+		import: importPlugin,
+	},
+	rules: {
+		'import/max-dependencies': [
+			'warn',
+			{
+				ignoreTypeImports: true,
+				max: 20,
+			},
+		],
+		'import/no-default-export': 'warn',
 
-	'import/no-duplicates': 'warn',
-	'import/no-mutable-exports': 'warn',
-	'object-shorthand': ['warn', 'never'],
+		'import/no-duplicates': 'warn',
+		'import/no-extraneous-dependencies': ['error', { devDependencies: false }],
+		'import/no-mutable-exports': 'warn',
+	},
+};
+
+/** @type  {import("eslint").Linter.RulesRecord} */
+const perfectionistRules = {
 	'perfectionist/sort-array-includes': [
 		'warn',
 		{
@@ -172,22 +181,25 @@ const stylisticPreferences = {
 			type: 'natural',
 		},
 	],
-	'prefer-arrow-callback': 'error',
 };
 
 /** @type {import("eslint").Linter.FlatConfig[]} */
 export default [
 	{
 		files: ['**/*.ts', '**/*.js', '**/*.mjs'],
-		ignores: ['**/node_modules/*', '**/out/*', '**/dist/**'],
+		ignores: ignores,
 		plugins: {
-			import: importPlugin,
 			perfectionist: perfectionistPlugin,
 		},
 		rules: {
 			...eslint.configs.recommended.rules,
 
-			...stylisticPreferences,
+			curly: ['warn', 'all'],
+			'function-paren-newline': ['warn', 'multiline-arguments'],
+			'object-shorthand': ['warn', 'never'],
+			'prefer-arrow-callback': 'error',
+
+			...perfectionistRules,
 		},
 	},
 
@@ -252,5 +264,6 @@ export default [
 		},
 	},
 
+	importConfig,
 	robloxTsConfig,
 ];
