@@ -9,19 +9,16 @@
 		"!**/*.test.*"
 	],
 	"scripts": {
-		"build:dev": "tsc",
-		"watch:dev": "tsc -w --preserveWatchOutput",
+		"build": "tsc",
+		"watch": "tsc -w --preserveWatchOutput",
 		"clean": "rimraf dist",
 		"test": "node --test",
 		"test:watch": "node --test --watch",
-		"build": "npm run clean && tsc -p tsconfig.build.json"
+		"lint": "eslint src",
+		"prepack": "npm run clean && tsc",
+		"prepublishOnly": "npm run test && npm run lint"
 	},
 	"license": "MIT",
-	"devDependencies": {
-		"@types/node": "^20.10.3",
-		"rimraf": "^5.0.5",
-		"typescript": "^5.3.2"
-	},
 	"dependencies": {
 		"is-wsl": "^3.1.0"
 	}
