@@ -5,9 +5,11 @@
 	"description": "",
 	"scripts": {
 		"dev": "concurrently -c auto \"npm:watch:*\"",
+		"build": "concurrently -c auto -m 1 \"npm:build:*\"",
 		"build:ts": "rbxtsc --type model",
+		"build:rbxm": "rojo build -o plugin.rbxm",
 		"watch:ts": "npm run build:ts -- --watch",
-		"watch:plugin": "node ./scripts/watch-plugin.mjs"
+		"watch:rbxm": "node ./scripts/watch-plugin.mjs"
 	},
 	"license": "MIT",
 	"dependencies": {

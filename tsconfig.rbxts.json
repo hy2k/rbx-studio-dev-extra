@@ -1,5 +1,4 @@
 {
-	"include": ["src/**/*"],
 	"compilerOptions": {
 		// required
 		"allowSyntheticDefaultImports": true,
@@ -18,11 +17,6 @@
 		"target": "ESNext",
 		"typeRoots": ["node_modules/@rbxts"],
 
-		// configurable
-		"types": ["types/plugin"],
-		"rootDir": "src",
-		"outDir": "out",
-		"baseUrl": "src",
 		"incremental": true,
 		"tsBuildInfoFile": ".tsbuildinfo"
 	}

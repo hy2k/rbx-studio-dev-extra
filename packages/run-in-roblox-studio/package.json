@@ -11,11 +11,12 @@
 		"!**/*.test.*"
 	],
 	"scripts": {
-		"start": "cross-env NODE_ENV=development node ./bin/run-in-roblox-studio.mjs --place place.rbxl --script script.server.lua",
+		"start": "cross-env NODE_ENV=development node bin/run-in-roblox-studio.mjs --place place.rbxl --script script.server.lua",
 		"dev": "concurrently -c auto \"npm:dev:*\"",
 		"build": "tsc",
+		"build:plugin": "npm run -prefix plugin build",
 		"dev:ts": "tsc -w --preserveWatchOutput",
-		"dev:rojo": "rojo build -o ./place.rbxl",
+		"dev:rojo": "rojo build -o place.rbxl",
 		"clean": "rimraf dist",
 		"test": "node --test",
 		"test:watch": "node --test --watch",
