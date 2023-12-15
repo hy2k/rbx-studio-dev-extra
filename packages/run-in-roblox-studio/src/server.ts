@@ -3,7 +3,9 @@ import Fastify from 'fastify';
 import { store } from './store.js';
 
 const fastify = Fastify({
-	logger: true,
+	logger: {
+		
+	}
 });
 
 fastify.get('/poll', async (_request, reply) => {

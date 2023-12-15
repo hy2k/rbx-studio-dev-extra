@@ -1,0 +1,10 @@
+{
+	"extends": "../../../tsconfig.rbxts.json",
+	"include": ["src/**/*"],
+	"compilerOptions": {
+		"typeRoots": ["node_modules/@rbxts"],
+		"types": ["types/plugin"],
+		"rootDir": "src",
+		"outDir": "out"
+	}
+}

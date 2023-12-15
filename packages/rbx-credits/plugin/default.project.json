@@ -1,0 +1,17 @@
+{
+	"name": "rbx-credits",
+	"globIgnorePaths": ["**/package.json", "**/tsconfig.json"],
+	"emitLegacyScripts": true,
+	"tree": {
+		"$path": "out",
+		"include": {
+			"$path": "include"
+		},
+		"node_modules": {
+			"$className": "Folder",
+			"@rbxts": {
+				"$path": "node_modules/@rbxts"
+			}
+		}
+	}
+}

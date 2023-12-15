@@ -21,6 +21,7 @@
 		"eslint-plugin-perfectionist": "^2.5.0",
 		"eslint-plugin-roblox-ts": "^0.0.36",
 		"execa": "^8.0.1",
+		"pino-pretty": "^10.3.0",
 		"prettier": "^3.1.1",
 		"rimraf": "^5.0.5",
 		"roblox-ts": "^2.2.0",

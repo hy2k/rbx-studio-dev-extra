@@ -1,13 +1,11 @@
 {
-	"name": "place",
+	"name": "rbx-credits-serve",
 	"globIgnorePaths": ["**/package.json", "**/tsconfig.json"],
 	"tree": {
 		"$className": "DataModel",
 		"Workspace": {
 			"$className": "Workspace",
-			"Project": {
-				"$className": "Folder"
-			}
+			"$path": "./fixtures/Workspace"
 		}
 	}
 }

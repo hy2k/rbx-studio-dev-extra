@@ -1,9 +1,9 @@
 {
-	"name": "run-in-roblox-studio",
-	"version": "0.0.2",
+	"name": "rbx-credits",
+	"version": "0.0.1",
 	"type": "module",
 	"bin": {
-		"run-in-roblox-studio": "bin/run-in-roblox-studio.mjs"
+		"rbx-credits": "bin/rbx-credits.mjs"
 	},
 	"files": [
 		"bin",
@@ -11,14 +11,15 @@
 		"!**/*.test.*"
 	],
 	"scripts": {
-		"start": "cross-env NODE_ENV=development node bin/run-in-roblox-studio.mjs --place run-in-roblox-studio.rbxl --script script.server.lua",
+		"start": "cross-env NODE_ENV=development node bin/rbx-credits.mjs --place rbx-credits.rbxl --script script.server.lua",
 		"build": "concurrently -c auto \"npm:build:*\"",
 		"build:ts": "tsc",
 		"build:plugin": "npm run -prefix plugin build",
 		"watch": "concurrently -c auto \"npm:watch:*\"",
 		"watch:ts": "tsc -w --preserveWatchOutput",
 		"watch:plugin": "npm run -prefix plugin watch",
-		"watch:place": "rojo build -o run-in-roblox-studio.rbxl --watch",
+		"watch:place": "rojo build -o rbx-credits.rbxl --watch",
+		"serve": "rojo serve",
 		"clean": "rimraf dist",
 		"test": "node --test",
 		"test:watch": "node --test --watch",
@@ -31,6 +32,9 @@
 	"dependencies": {
 		"cleye": "^1.3.2",
 		"fastify": "^4.25.0",
-		"open-rbxl": "^0.0.4"
+		"ky": "^1.1.3",
+		"open-rbxl": "^0.0.4",
+		"pino": "^8.17.1",
+		"zod": "^3.22.4"
 	}
 }
