@@ -1,5 +1,5 @@
 {
-	"name": "run-in-roblox-studio-place",
+	"name": "place",
 	"globIgnorePaths": ["**/package.json", "**/tsconfig.json"],
 	"tree": {
 		"$className": "DataModel"

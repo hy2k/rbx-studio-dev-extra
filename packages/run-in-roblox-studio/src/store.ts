@@ -1,3 +1,4 @@
+/** @internal */
 class Store {
 	#luaSource: string | undefined;
 
@@ -16,3 +17,5 @@ class Store {
 }
 
 export const store = new Store();
+
+export { Store as TestStore };
