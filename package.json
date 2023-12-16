@@ -34,9 +34,9 @@
 		"tabWidth": 4
 	},
 	"scripts": {
-		"dev": "concurrently -c auto \"npm:dev:*\"",
-		"dev:run-in-roblox-studio-plugin": "npm run -prefix plugins/run-in-roblox-studio-plugin dev",
-		"dev:run-in-roblox-studio": "npm run --workspace run-in-roblox-studio dev",
+		"build": "npm run build --workspaces --if-present",
+		"watch": "node scripts/concurrently.mjs watch",
+		"test": "npm run test --workspaces --if-present",
 		"fix": "eslint --fix \"**/*.{ts,mjs,json}\"",
 		"format": "prettier --write \"**/*.{ts,json}\""
 	}
