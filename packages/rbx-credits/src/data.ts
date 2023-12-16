@@ -2,6 +2,7 @@ import ky, { HTTPError, TimeoutError } from 'ky';
 import * as fs from 'node:fs/promises';
 import { z } from 'zod';
 
+import { AssetStore } from './asset-store.js';
 import { Cache, getCachedDataPath } from './cache.js';
 import { logger } from './logger.js';
 import { DeveloperProductInfo } from './schema.js';
@@ -65,22 +66,18 @@ function parseStringAssetId(value: string) {
 const RawAssetValue = z.union([z.number(), z.string().transform(parseStringAssetId)]);
 type RawAssetValue = z.infer<typeof RawAssetValue>;
 
-type AssetData = Map<string, DeveloperProductInfo[]>;
-
 async function parseData(data: object, cache: Cache) {
 	const assetEntries = Object.entries(data);
 	logger.info(`Parsing ${assetEntries.length} assets`);
 	logger.debug(data);
 
-	const assetData: AssetData = new Map();
+	const assetStore = new AssetStore();
 
-	for (const [property, assetValues] of assetEntries) {
-		const assets: DeveloperProductInfo[] = [];
-
+	for (const [rbxProperty, assetValues] of assetEntries) {
 		const resultAssetIds = RawAssetValue.array().safeParse(assetValues);
 
 		if (!resultAssetIds.success) {
-			logger.warn(`Failed to parse asset IDs for property ${property}`);
+			logger.warn(`Failed to parse asset IDs for property ${rbxProperty}`);
 			continue;
 		}
 
@@ -92,32 +89,17 @@ async function parseData(data: object, cache: Cache) {
 			const cacheFound = cache.findById(rawAssetValue);
 			if (cacheFound) {
 				logger.info(`Found data for ${rawAssetValue} from cache`);
-				assets.push(cacheFound);
+				assetStore.add(rbxProperty, cacheFound);
 				continue;
 			}
 
 			const fetched = await fetchAssetInfo(rawAssetValue);
-			assets.push(fetched);
+			assetStore.add(rbxProperty, fetched);
 			cache.push(fetched);
 		}
-		assetData.set(property, assets);
 	}
 
-	return assetData;
-}
-
-function formatAssetData(assetData: AssetData): string {
-	let formatted = '';
-
-	for (const [property, assets] of assetData) {
-		formatted += `**${property}**\n`;
-
-		for (const asset of assets) {
-			formatted += `${asset.Creator.Name}\n`;
-		}
-	}
-
-	return formatted;
+	return assetStore;
 }
 
 export async function emitAssetCredits(data: object) {
@@ -127,13 +109,11 @@ export async function emitAssetCredits(data: object) {
 	const cache = await new Cache(cachePath).init();
 
 	try {
-		const assetData = await parseData(data, cache);
-
-		const formatted = formatAssetData(assetData);
+		const assetStore = await parseData(data, cache);
 
 		logger.info('Emitting asset credits');
 
-		await fs.writeFile('asset-credits.txt', formatted);
+		await fs.writeFile('asset-credits.txt', assetStore.formatData());
 	} catch (err) {
 		if (err instanceof FetchAssetInfoError) {
 			logger.error(err.message);

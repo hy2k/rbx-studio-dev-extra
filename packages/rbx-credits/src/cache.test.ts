@@ -7,15 +7,14 @@ import type { DeveloperProductInfo } from './schema.js';
 
 import { logger } from './logger.js';
 
-const info: Readonly<DeveloperProductInfo> = {
+const asset: Readonly<DeveloperProductInfo> = {
+	AssetId: 1,
 	Created: 'test',
 	Creator: {
 		Id: 1,
 		Name: 'test',
 	},
-	Description: 'test',
 	Name: 'test',
-	TargetId: 1,
 	Updated: 'test',
 };
 
@@ -36,7 +35,7 @@ describe('init', () => {
 			'test-cache': {
 				'bad-schema.json': JSON.stringify([{}]),
 				'corrupted.json': '{ ',
-				'valid-schema': JSON.stringify([info]),
+				'valid-schema': JSON.stringify([asset]),
 			},
 		});
 		fs = createFsFromVolume(vol).promises;
@@ -76,7 +75,7 @@ describe('init', () => {
 
 		const cache = await new Cache('test-cache/valid-schema').init();
 
-		expect(cache.data).toStrictEqual([info]);
+		expect(cache.data).toStrictEqual([asset]);
 	});
 });
 
@@ -94,11 +93,11 @@ describe('findById', () => {
 		const { Cache } = await import('./cache.js');
 
 		const cache = await new Cache('test-cache/data.json').init();
-		cache.push(info);
+		cache.push(asset);
 
-		const result = cache.findById(info.TargetId);
+		const result = cache.findById(asset.AssetId);
 
-		expect(result).toStrictEqual(info);
+		expect(result).toStrictEqual(asset);
 	});
 });
 
@@ -123,12 +122,12 @@ describe('writeFile', () => {
 		const { Cache } = await import('./cache.js');
 
 		const cache = await new Cache('test-cache/data.json').init();
-		cache.push(info);
+		cache.push(asset);
 
 		// @ts-expect-error - mock
 		await cache.writeFile(writer);
 
-		expect(writer).toHaveBeenCalledWith('test-cache/data.json', JSON.stringify(cache.data));
+		expect(writer).toHaveBeenCalledWith('test-cache/data.json', JSON.stringify(cache.data), 'utf-8');
 		expect(logger.info).toHaveBeenCalledWith(`Completed writing ${cache.data.length} cached data`);
 	});
 });
@@ -153,10 +152,10 @@ describe('push', () => {
 		const cache = await new Cache('test-cache/data.json').init();
 		const initialLength = cache.data.length;
 
-		cache.push(info);
+		cache.push(asset);
 
 		expect(cache.data.length).toBe(initialLength + 1);
-		expect(cache.data).toStrictEqual([info]);
+		expect(cache.data).toStrictEqual([asset]);
 	});
 
 	it('should not add duplicate data when push is called', async () => {
@@ -165,10 +164,10 @@ describe('push', () => {
 		const cache = await new Cache('test-cache/data.json').init();
 		const initialLength = cache.data.length;
 
-		cache.push(info);
-		cache.push(info);
+		cache.push(asset);
+		cache.push(asset);
 
 		expect(cache.data.length).toBe(initialLength + 1);
-		expect(cache.data).toStrictEqual([info]);
+		expect(cache.data).toStrictEqual([asset]);
 	});
 });

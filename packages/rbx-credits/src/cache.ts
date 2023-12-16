@@ -30,7 +30,7 @@ export class Cache {
 	}
 
 	findById(assetId: number) {
-		return this.#data.find((data) => data.TargetId === assetId);
+		return this.#data.find((data) => data.AssetId === assetId);
 	}
 
 	async init(): Promise<Cache> {
@@ -69,7 +69,7 @@ export class Cache {
 
 	push(data: DeveloperProductInfo) {
 		// Prevents duplicate data
-		if (this.findById(data.TargetId)) {
+		if (this.findById(data.AssetId)) {
 			return;
 		}
 
@@ -77,7 +77,7 @@ export class Cache {
 	}
 
 	async writeFile(writer = fs.writeFile) {
-		await writer(this.#cachePath, JSON.stringify(this.#data));
+		await writer(this.#cachePath, JSON.stringify(this.#data), 'utf-8');
 		logger.info(`Completed writing ${this.#data.length} cached data`);
 	}
 
