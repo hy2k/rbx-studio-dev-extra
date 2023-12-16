@@ -1,13 +1,19 @@
 import Fastify from 'fastify';
 
-import { parseData } from './data.js';
+import { emitAssetCredits } from './data.js';
 import { logger } from './logger.js';
+
+let isStarted = false;
 
 const fastify = Fastify({
 	logger: logger,
 });
 
 fastify.get('/poll', async (_request, reply) => {
+	if (isStarted) {
+		return reply.status(400).send('Already started');
+	}
+
 	return reply.status(204).send();
 });
 
@@ -32,9 +38,10 @@ fastify.post(
 
 		reply.status(204).send();
 
-		parseData(data as object).then(() => {
-			process.exit(0);
-		});
+		emitAssetCredits(data as object);
+		// Prevent plugin from running multiple times. This may happen when another polling request
+		// is sent before the previous one is finished.
+		isStarted = true;
 	},
 );
 

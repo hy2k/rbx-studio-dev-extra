@@ -1,8 +1,9 @@
 import { cli as cleye } from 'cleye';
 import * as fs from 'node:fs';
+import { open } from 'open-rbxl';
 
 import pkg from '../package.json' with { type: 'json' };
-import { start } from './index.js';
+import { startServer } from './index.js';
 
 function File(str: string) {
 	const stat = fs.statSync(str);
@@ -40,7 +41,6 @@ if (!placePath) {
 	process.exit(1);
 }
 
-start({
-	placePath: placePath,
-	port: port,
-});
+startServer(port);
+
+open(placePath, {});

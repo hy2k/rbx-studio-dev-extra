@@ -1,13 +1,10 @@
 import { HttpService } from '@rbxts/services';
 import { setInterval } from '@rbxts/set-timeout';
 
+import { debuglog, debugwarn } from './debug';
 import { findAssets } from './find-assets';
 
-const PREFIX = '[rbx-credits]';
 const DEFAULT_POLL_INTERVAL = 5;
-
-const debugConfig = script.Parent?.FindFirstChild('Debug');
-const isDebug = debugConfig?.IsA('BoolValue') ? debugConfig.Value : false;
 
 // TODO: port is not configurable for now
 const port = 34568;
@@ -28,9 +25,7 @@ function poll() {
 	}
 }
 
-if (isDebug) {
-	print(PREFIX, 'Started with debug mode enabled');
-}
+debuglog('Started with debug mode enabled');
 
 let skipPolling = false;
 setInterval(() => {
@@ -64,11 +59,10 @@ setInterval(() => {
 
 		promise.finally(() => {
 			skipPolling = false;
+			debuglog('Completed. Restarting.');
 		});
 	} catch (err) {
-		if (isDebug) {
-			warn(PREFIX, err);
-		}
+		debugwarn(err);
 		return;
 	}
 }, DEFAULT_POLL_INTERVAL);

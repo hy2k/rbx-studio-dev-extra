@@ -1,18 +1,9 @@
-import { open } from 'open-rbxl';
-
 import { server } from './server.js';
 
-interface StartOptions {
-	placePath: string;
-	port: number;
-}
-
-export async function start({ placePath, port }: StartOptions) {
+export async function startServer(port: number) {
 	try {
 		await server.listen({ port: port });
 	} catch (err) {
 		server.log.error(err);
 	}
-
-	open(placePath, {});
 }
