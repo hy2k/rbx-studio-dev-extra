@@ -230,7 +230,6 @@ const robloxTsConfig = {
 /** @type {import("eslint").Linter.FlatConfig} */
 const importConfig = {
 	files: ['**/*.ts'],
-	ignores: ignores,
 	plugins: {
 		import: importPlugin,
 	},
@@ -249,6 +248,14 @@ const importConfig = {
 		'import/no-mutable-exports': 'warn',
 	},
 };
+
+const testImportConfig = {
+	files: ['**/*.test.*'],
+	rules: {
+		'import/no-extraneous-dependencies': "off",
+	},
+};
+
 /** @type {import("eslint").Linter.FlatConfig[]} */
 export default [
 	baseConfig,
@@ -262,4 +269,5 @@ export default [
 	},
 
 	importConfig,
+	testImportConfig,
 ];

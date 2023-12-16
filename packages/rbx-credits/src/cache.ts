@@ -1,7 +1,10 @@
 import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
+import { isNativeError } from 'node:util/types';
+import { ZodError } from 'zod';
 
+import { logger } from './logger.js';
 import { DeveloperProductInfo } from './schema.js';
 
 export async function getCachedDataPath() {
@@ -17,16 +20,68 @@ export async function getCachedDataPath() {
 	return path.join(cacheDir, 'data.json');
 }
 
-export async function getCachedData() {
-	const cachedDataPath = await getCachedDataPath();
+export class Cache {
+	#cachePath: string;
 
-	let content: string;
-	try {
-		const data = await fs.readFile(cachedDataPath, 'utf-8');
-		content = JSON.parse(data);
-	} catch {
-		return [];
+	#data: DeveloperProductInfo[] = [];
+
+	constructor(private cachePath: string) {
+		this.#cachePath = cachePath;
 	}
 
-	return DeveloperProductInfo.array().parse(content);
+	findById(assetId: number) {
+		return this.#data.find((data) => data.TargetId === assetId);
+	}
+
+	async init(): Promise<Cache> {
+		try {
+			const content = await fs.readFile(this.#cachePath, 'utf-8');
+			const data = JSON.parse(content);
+			this.#data = DeveloperProductInfo.array().parse(data);
+		} catch (err) {
+			// instanceof check fails in jest environment
+			// See https://github.com/jestjs/jest/issues/2549
+			if (isNativeError(err)) {
+				if ('code' in err && err.code === 'ENOENT') {
+					// This is not an error. It is expected for the first time.
+					logger.info('No cached data found');
+					return this;
+				}
+
+				if (err instanceof SyntaxError) {
+					logger.error('Cached data is corrupted.');
+				} else if (err instanceof ZodError) {
+					logger.error('Schema validation failed for cached data.');
+				}
+
+				delete err.stack;
+				logger.error(err);
+			} else {
+				logger.fatal('Unknown error when reading cached data.');
+				logger.fatal(err);
+			}
+
+			process.exit(1);
+		}
+
+		return this;
+	}
+
+	push(data: DeveloperProductInfo) {
+		// Prevents duplicate data
+		if (this.findById(data.TargetId)) {
+			return;
+		}
+
+		this.#data.push(data);
+	}
+
+	async writeFile(writer = fs.writeFile) {
+		await writer(this.#cachePath, JSON.stringify(this.#data));
+		logger.info(`Completed writing ${this.#data.length} cached data`);
+	}
+
+	get data() {
+		return this.#data;
+	}
 }

@@ -2,7 +2,7 @@ import ky, { HTTPError, TimeoutError } from 'ky';
 import * as fs from 'node:fs/promises';
 import { z } from 'zod';
 
-import { getCachedData, getCachedDataPath } from './cache.js';
+import { Cache, getCachedDataPath } from './cache.js';
 import { logger } from './logger.js';
 import { DeveloperProductInfo } from './schema.js';
 
@@ -65,11 +65,9 @@ function parseStringAssetId(value: string) {
 const RawAssetValue = z.union([z.number(), z.string().transform(parseStringAssetId)]);
 type RawAssetValue = z.infer<typeof RawAssetValue>;
 
-const cachedData: DeveloperProductInfo[] = await getCachedData();
-
 type AssetData = Map<string, DeveloperProductInfo[]>;
 
-async function parseData(data: object) {
+async function parseData(data: object, cache: Cache) {
 	const assetEntries = Object.entries(data);
 	logger.info(`Parsing ${assetEntries.length} assets`);
 	logger.debug(data);
@@ -91,7 +89,7 @@ async function parseData(data: object) {
 				continue;
 			}
 
-			const cacheFound = cachedData.find((cached) => cached.TargetId === rawAssetValue);
+			const cacheFound = cache.findById(rawAssetValue);
 			if (cacheFound) {
 				logger.info(`Found data for ${rawAssetValue} from cache`);
 				assets.push(cacheFound);
@@ -100,19 +98,12 @@ async function parseData(data: object) {
 
 			const fetched = await fetchAssetInfo(rawAssetValue);
 			assets.push(fetched);
-			cachedData.push(fetched);
+			cache.push(fetched);
 		}
 		assetData.set(property, assets);
 	}
 
 	return assetData;
-}
-
-async function writeCachedData() {
-	const cachedDataPath = await getCachedDataPath();
-
-	await fs.writeFile(cachedDataPath, JSON.stringify(cachedData));
-	logger.info(`Completed writing ${cachedData.length} cached data`);
 }
 
 function formatAssetData(assetData: AssetData): string {
@@ -132,8 +123,11 @@ function formatAssetData(assetData: AssetData): string {
 export async function emitAssetCredits(data: object) {
 	let exitCode = 0;
 
+	const cachePath = await getCachedDataPath();
+	const cache = await new Cache(cachePath).init();
+
 	try {
-		const assetData = await parseData(data);
+		const assetData = await parseData(data, cache);
 
 		const formatted = formatAssetData(assetData);
 
@@ -154,6 +148,6 @@ export async function emitAssetCredits(data: object) {
 		exitCode = 1;
 	}
 
-	await writeCachedData();
+	await cache.writeFile();
 	process.exit(exitCode);
 }
