@@ -1,4 +1,4 @@
-import ky from 'ky';
+import ky, { HTTPError, TimeoutError } from 'ky';
 import * as fs from 'node:fs/promises';
 import { z } from 'zod';
 
@@ -8,13 +8,42 @@ import { DeveloperProductInfo } from './schema.js';
 
 const endpoint = (assetId: number) => `https://economy.roblox.com/v2/developer-products/${assetId}/info`;
 
-async function fetchProductInfo(assetId: number) {
-	logger.info(`Fetching product info for ${assetId}`);
-	const response = await ky.get(endpoint(assetId)).json();
+class FetchAssetInfoError extends Error {
+	constructor(string?: string, options?: ErrorOptions) {
+		super(string, options);
+		this.name = 'FetchError';
+	}
+}
 
-	const result = DeveloperProductInfo.parse(response);
+async function fetchAssetInfo(assetId: number) {
+	try {
+		logger.info(`Fetching asset info for ${assetId}`);
+		const response = await ky.get(endpoint(assetId)).json();
 
-	return result;
+		const result = DeveloperProductInfo.parse(response);
+
+		return result;
+	} catch (err) {
+		if (err instanceof HTTPError) {
+			throw new FetchAssetInfoError(`Failed to fetch product info for ${assetId}`, {
+				cause: err,
+			});
+		}
+
+		if (err instanceof TimeoutError) {
+			throw new FetchAssetInfoError(`Timed out fetching product info for ${assetId}`, {
+				cause: err,
+			});
+		}
+
+		if (err instanceof z.ZodError) {
+			throw new FetchAssetInfoError(`Failed to parse product info for ${assetId}`, {
+				cause: err,
+			});
+		}
+
+		throw err;
+	}
 }
 
 function parseStringAssetId(value: string) {
@@ -38,14 +67,18 @@ type RawAssetValue = z.infer<typeof RawAssetValue>;
 
 const cachedData: DeveloperProductInfo[] = await getCachedData();
 
+type AssetData = Map<string, DeveloperProductInfo[]>;
+
 async function parseData(data: object) {
 	const assetEntries = Object.entries(data);
 	logger.info(`Parsing ${assetEntries.length} assets`);
 	logger.debug(data);
 
-	const assets: DeveloperProductInfo[] = [];
+	const assetData: AssetData = new Map();
 
 	for (const [property, assetValues] of assetEntries) {
+		const assets: DeveloperProductInfo[] = [];
+
 		const resultAssetIds = RawAssetValue.array().safeParse(assetValues);
 
 		if (!resultAssetIds.success) {
@@ -65,13 +98,14 @@ async function parseData(data: object) {
 				continue;
 			}
 
-			const fetched = await fetchProductInfo(rawAssetValue);
+			const fetched = await fetchAssetInfo(rawAssetValue);
 			assets.push(fetched);
 			cachedData.push(fetched);
 		}
+		assetData.set(property, assets);
 	}
 
-	return assets;
+	return assetData;
 }
 
 async function writeCachedData() {
@@ -81,12 +115,45 @@ async function writeCachedData() {
 	logger.info(`Completed writing ${cachedData.length} cached data`);
 }
 
-export async function emitAssetCredits(data: object) {
-	try {
-		const assets = await parseData(data);
-	} finally {
-		await writeCachedData();
+function formatAssetData(assetData: AssetData): string {
+	let formatted = '';
 
-		process.exit(0);
+	for (const [property, assets] of assetData) {
+		formatted += `**${property}**\n`;
+
+		for (const asset of assets) {
+			formatted += `${asset.Creator.Name}\n`;
+		}
 	}
+
+	return formatted;
+}
+
+export async function emitAssetCredits(data: object) {
+	let exitCode = 0;
+
+	try {
+		const assetData = await parseData(data);
+
+		const formatted = formatAssetData(assetData);
+
+		logger.info('Emitting asset credits');
+
+		await fs.writeFile('asset-credits.txt', formatted);
+	} catch (err) {
+		if (err instanceof FetchAssetInfoError) {
+			logger.error(err.message);
+
+			if (err.cause instanceof Error) {
+				delete err.cause.stack;
+				logger.error(err.cause);
+			}
+		} else {
+			logger.fatal(err);
+		}
+		exitCode = 1;
+	}
+
+	await writeCachedData();
+	process.exit(exitCode);
 }

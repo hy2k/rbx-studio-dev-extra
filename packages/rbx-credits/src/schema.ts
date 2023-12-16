@@ -33,15 +33,12 @@ import { z } from 'zod';
 export const DeveloperProductInfo = z.object({
 	Created: z.string(),
 	Creator: z.object({
-		CreatorTargetId: z.number(),
-		CreatorType: z.string(),
 		Id: z.number(),
 		Name: z.string(),
 	}),
-	Description: z.string(),
+	Description: z.string().nullable(),
 	Name: z.string(),
-	ProductType: z.string(),
 	TargetId: z.number(),
-	Updated: z.string(),
+	Updated: z.string().nullable(),
 });
 export type DeveloperProductInfo = z.infer<typeof DeveloperProductInfo>;
