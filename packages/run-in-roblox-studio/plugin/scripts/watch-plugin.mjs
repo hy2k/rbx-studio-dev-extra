@@ -13,7 +13,6 @@ const $$ = $({
 });
 
 const ENV_VAR_ROBLOX_STUDIO_PATH = 'ROBLOX_STUDIO_PATH';
-const DEV_PLUGIN_NAME = 'run-in-roblox-studio-dev.rbxm';
 
 const robloxStudioRoot = process.env[ENV_VAR_ROBLOX_STUDIO_PATH];
 const robloxStudioPath = await getRobloxStudioPath(robloxStudioRoot ? path.resolve(robloxStudioRoot) : undefined);
@@ -22,4 +21,13 @@ if (!fs.existsSync('./out')) {
 	await $$`rbxtsc --type model`;
 }
 
-$$`rojo build dev.project.json -o ${path.join(robloxStudioPath.plugins, DEV_PLUGIN_NAME)} --watch`;
+const plugin = path.join(robloxStudioPath.plugins, 'run-in-roblox-studio-dev.rbxm');
+
+$$`rojo build dev.project.json -o ${plugin} --watch`;
+
+process.on('SIGINT', () => {
+	if (fs.existsSync(plugin)) {
+		console.info(`Cleaning up ${plugin}`);
+		fs.rmSync(plugin);
+	}
+});
