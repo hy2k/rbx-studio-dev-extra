@@ -1,4 +1,4 @@
-import { HttpService } from '@rbxts/services';
+import { HttpService, RunService } from '@rbxts/services';
 import { setInterval } from '@rbxts/set-timeout';
 
 import { debuglog, debugwarn } from './debug';
@@ -25,44 +25,50 @@ function poll() {
 	}
 }
 
-debuglog('Started with debug mode enabled');
+function main() {
+	debuglog('Started with debug mode enabled');
 
-let skipPolling = false;
-setInterval(() => {
-	if (skipPolling) {
-		return;
-	}
+	let skipPolling = false;
+	setInterval(() => {
+		if (skipPolling) {
+			return;
+		}
 
-	try {
-		poll();
+		try {
+			poll();
 
-		skipPolling = true;
+			skipPolling = true;
 
-		const promise = new Promise((resolve, reject) => {
-			const assets = findAssets();
+			const promise = new Promise((resolve, reject) => {
+				const assets = findAssets();
 
-			const response = HttpService.RequestAsync({
-				Body: HttpService.JSONEncode(assets),
-				Headers: {
-					['Content-Type']: 'application/json',
-				},
-				Method: 'POST',
-				Url: getURL('submit'),
+				const response = HttpService.RequestAsync({
+					Body: HttpService.JSONEncode(assets),
+					Headers: {
+						['Content-Type']: 'application/json',
+					},
+					Method: 'POST',
+					Url: getURL('submit'),
+				});
+
+				if (!response.Success) {
+					reject('Failed to submit');
+				}
+
+				resolve('Ok');
 			});
 
-			if (!response.Success) {
-				reject('Failed to submit');
-			}
+			promise.finally(() => {
+				skipPolling = false;
+				debuglog('Completed. Restarting.');
+			});
+		} catch (err) {
+			debugwarn(err);
+			return;
+		}
+	}, DEFAULT_POLL_INTERVAL);
+}
 
-			resolve('Ok');
-		});
-
-		promise.finally(() => {
-			skipPolling = false;
-			debuglog('Completed. Restarting.');
-		});
-	} catch (err) {
-		debugwarn(err);
-		return;
-	}
-}, DEFAULT_POLL_INTERVAL);
+if (RunService.IsStudio() && RunService.IsEdit()) {
+	main();
+}

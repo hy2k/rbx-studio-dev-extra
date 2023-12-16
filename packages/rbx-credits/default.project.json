@@ -6,6 +6,10 @@
 		"Workspace": {
 			"$className": "Workspace",
 			"$path": "./fixtures/Workspace"
+		},
+		"ServerStorage": {
+			"$className": "ServerStorage",
+			"$path": "./fixtures/ServerStorage"
 		}
 	}
 }
