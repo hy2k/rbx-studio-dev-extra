@@ -21,7 +21,7 @@ export class AssetStore {
 			formatted += `**${property}**\n`;
 
 			for (const asset of assets) {
-				formatted += `${asset.Creator.Name}\n`;
+				formatted += `${asset.AssetId} by ${asset.Creator.Name}\n`;
 			}
 		}
 

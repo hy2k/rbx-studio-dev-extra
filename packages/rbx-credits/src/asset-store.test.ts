@@ -1,8 +1,8 @@
 import { describe, expect, it } from '@jest/globals';
 
-import type { DeveloperProductInfo } from './schema';
+import type { DeveloperProductInfo } from './schema.js';
 
-import { AssetStore } from './asset-store';
+import { AssetStore } from './asset-store.js';
 
 const asset: Readonly<DeveloperProductInfo> = {
 	AssetId: 1,

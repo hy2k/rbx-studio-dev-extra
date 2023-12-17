@@ -1,7 +1,8 @@
 import ky, { HTTPError, TimeoutError } from 'ky';
 import * as fs from 'node:fs/promises';
-import { z } from 'zod';
+import { ZodError } from 'zod';
 
+import { getAssetIdsFromData } from './asset-id-parser.js';
 import { AssetStore } from './asset-store.js';
 import { Cache, getCachedDataPath } from './cache.js';
 import { logger } from './logger.js';
@@ -37,7 +38,7 @@ async function fetchAssetInfo(assetId: number) {
 			});
 		}
 
-		if (err instanceof z.ZodError) {
+		if (err instanceof ZodError) {
 			throw new FetchAssetInfoError(`Failed to parse product info for ${assetId}`, {
 				cause: err,
 			});
@@ -47,55 +48,19 @@ async function fetchAssetInfo(assetId: number) {
 	}
 }
 
-function parseStringAssetId(value: string) {
-	if (typeof value === 'number') {
-		return value;
-	}
-
-	// TODO: Fix this naive number parsing
-	const match = value.match(/\d+/);
-
-	if (!match) {
-		logger.warn(`Failed to parse asset ID: ${value}`);
-		return;
-	}
-
-	return parseInt(match[0]);
-}
-
-const RawAssetValue = z.union([z.number(), z.string().transform(parseStringAssetId)]);
-type RawAssetValue = z.infer<typeof RawAssetValue>;
-
-async function parseData(data: object, cache: Cache) {
-	const assetEntries = Object.entries(data);
-	logger.info(`Parsing ${assetEntries.length} assets`);
-	logger.debug(data);
-
+async function createAssetStore(data: object, cache: Cache) {
 	const assetStore = new AssetStore();
 
-	for (const [rbxProperty, assetValues] of assetEntries) {
-		const resultAssetIds = RawAssetValue.array().safeParse(assetValues);
+	for (const [property, assetIds] of getAssetIdsFromData(data)) {
+		for (const assetId of assetIds) {
+			let asset = cache.findById(assetId);
 
-		if (!resultAssetIds.success) {
-			logger.warn(`Failed to parse asset IDs for property ${rbxProperty}`);
-			continue;
-		}
-
-		for (const rawAssetValue of resultAssetIds.data) {
-			if (!rawAssetValue || isNaN(rawAssetValue)) {
-				continue;
+			if (!asset) {
+				asset = await fetchAssetInfo(assetId);
+				cache.push(asset);
 			}
 
-			const cacheFound = cache.findById(rawAssetValue);
-			if (cacheFound) {
-				logger.info(`Found data for ${rawAssetValue} from cache`);
-				assetStore.add(rbxProperty, cacheFound);
-				continue;
-			}
-
-			const fetched = await fetchAssetInfo(rawAssetValue);
-			assetStore.add(rbxProperty, fetched);
-			cache.push(fetched);
+			assetStore.add(property, asset);
 		}
 	}
 
@@ -109,7 +74,7 @@ export async function emitAssetCredits(data: object) {
 	const cache = await new Cache(cachePath).init();
 
 	try {
-		const assetStore = await parseData(data, cache);
+		const assetStore = await createAssetStore(data, cache);
 
 		logger.info('Emitting asset credits');
 
