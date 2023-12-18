@@ -1,15 +1,17 @@
 {
-	"name": "plugin",
+	"name": "rbx-credits-plugin",
 	"version": "0.0.1",
 	"private": true,
 	"description": "",
 	"scripts": {
+		"prebuild": "rimraf out",
 		"build": "concurrently -c auto -m 1 \"npm:build:*\"",
-		"build:ts": "rbxtsc --type model",
-		"build:rbxm": "rojo build -o plugin.rbxm",
-		"watch": "concurrently -c auto \"npm:watch:*\"",
+		"build:ts": "rbxtsc --type model --verbose",
+		"build:rbxm": "rojo build -o rbx-credits.rbxm",
+		"watch": "npm run build:ts && concurrently -c auto \"npm:watch:*\"",
 		"watch:ts": "npm run build:ts -- --watch",
-		"watch:rbxm": "node ./scripts/watch-plugin.mjs"
+		"watch:rbxm": "npm run build:rbxm -- --watch",
+		"postinstall": "npm run build"
 	},
 	"license": "MIT",
 	"dependencies": {

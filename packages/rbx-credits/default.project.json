@@ -9,7 +9,17 @@
 		},
 		"ServerStorage": {
 			"$className": "ServerStorage",
-			"$path": "./fixtures/ServerStorage"
+			"$path": "./fixtures/ServerStorage",
+			"PluginConfig": {
+				"$className": "Folder",
+				"rbx-credits": {
+					"$className": "Configuration",
+					"$attributes": {
+						"debugMode": true,
+						"port": 11499
+					}
+				}
+			}
 		}
 	}
 }

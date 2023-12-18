@@ -1,11 +1,9 @@
-const rbxCredits = script.FindFirstAncestor('rbx-credits');
+import { config } from './config';
 
 const PREFIX = '[rbx-credits]';
-const debugConfig = rbxCredits?.FindFirstChild('Debug');
-const isDebug = debugConfig?.IsA('BoolValue') ? debugConfig.Value : false;
 
 export function debuglog(...args: unknown[]) {
-	if (!isDebug) {
+	if (!config.debugMode) {
 		return;
 	}
 
@@ -13,7 +11,7 @@ export function debuglog(...args: unknown[]) {
 }
 
 export function debugwarn(...args: unknown[]) {
-	if (!isDebug) {
+	if (!config.debugMode) {
 		return;
 	}
 

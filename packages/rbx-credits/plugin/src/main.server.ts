@@ -1,18 +1,13 @@
 import { HttpService, RunService } from '@rbxts/services';
 import { setInterval } from '@rbxts/set-timeout';
 
+import { config } from './config';
 import { debuglog, debugwarn } from './debug';
 import { findAssets } from './find-assets';
 
-const DEFAULT_POLL_INTERVAL = 5;
+const SERVER_URL = `http://127.0.0.1:${config.port}`;
 
-// TODO: port is not configurable for now
-const port = 34568;
-const serverUrl = `http://127.0.0.1`;
-
-function getURL(route: string) {
-	return `${serverUrl}:${port}/${route}`;
-}
+const getURL = (route: string) => `${SERVER_URL}/${route}`;
 
 function poll() {
 	const response = HttpService.RequestAsync({
@@ -59,14 +54,15 @@ function main() {
 			});
 
 			promise.finally(() => {
-				skipPolling = false;
-				debuglog('Completed. Restarting.');
+				debuglog('Completed.');
+
+				// Wait for CLI to remove the plugin
 			});
 		} catch (err) {
 			debugwarn(err);
 			return;
 		}
-	}, DEFAULT_POLL_INTERVAL);
+	}, config.pollInterval);
 }
 
 if (RunService.IsStudio() && RunService.IsEdit()) {

@@ -10,14 +10,12 @@
 		"moduleResolution": "Node",
 		"noLib": true,
 		"resolveJsonModule": true,
+		"removeComments": true,
 		"experimentalDecorators": true,
 		"forceConsistentCasingInFileNames": true,
 		"moduleDetection": "force",
 		"strict": true,
 		"target": "ESNext",
-		"typeRoots": ["node_modules/@rbxts"],
-
-		"incremental": true,
-		"tsBuildInfoFile": ".tsbuildinfo"
+		"typeRoots": ["node_modules/@rbxts"]
 	}
 }

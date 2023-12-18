@@ -4,6 +4,10 @@ import { open } from 'open-rbxl';
 
 import pkg from '../package.json' with { type: 'json' };
 import { startServer } from './index.js';
+import { logger } from './logger.js';
+import { copyPlugin } from './plugin.js';
+
+const DEFAULT_PORT = 11499;
 
 function File(str: string) {
 	const stat = fs.statSync(str);
@@ -22,7 +26,7 @@ const cli = cleye({
 		},
 		port: {
 			alias: 'p',
-			default: 34568,
+			default: DEFAULT_PORT,
 			description: 'Port to use for the server',
 			type: Number,
 		},
@@ -41,6 +45,15 @@ if (!placePath) {
 	process.exit(1);
 }
 
-startServer(port);
+copyPlugin().catch((err) => {
+	logger.fatal(err);
+	process.exit(1);
+});
 
-open(placePath, {});
+startServer(port).catch((err) => {
+	logger.fatal(err);
+});
+
+open(placePath, {}).catch((err) => {
+	logger.fatal(err);
+});
