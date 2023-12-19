@@ -55,11 +55,18 @@ export interface RbxlOptions {
 	 * Defaults to `false`.
 	 */
 	force?: boolean;
+
+	/**
+	 * Function to log messages.
+	 *
+	 * Defaults to `console.log`.
+	 */
+	log?: (message: string) => void;
 }
 
 export async function open(
 	placePath: string,
-	{ _spawnFn = spawnRobloxStudio, checkFn = checkStudioOpen, force = false }: RbxlOptions,
+	{ _spawnFn = spawnRobloxStudio, checkFn = checkStudioOpen, force = false, log = console.log }: RbxlOptions,
 ) {
 	// Check if the place file exists
 	try {
@@ -76,11 +83,11 @@ export async function open(
 
 	if (!force) {
 		if (await checkFn(placePath)) {
-			console.log('[open-rbxl] Roblox Studio is already open');
+			log('[open-rbxl] Roblox Studio is already open');
 			return;
 		}
 	}
 
-	console.log('[open-rbxl] Opening Roblox Studio...');
+	log('[open-rbxl] Opening Roblox Studio...');
 	return _spawnFn(placePath);
 }
