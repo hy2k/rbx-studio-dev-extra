@@ -5,6 +5,7 @@ import importPlugin from 'eslint-plugin-import';
 import jestPlugin from 'eslint-plugin-jest';
 import perfectionistPlugin from 'eslint-plugin-perfectionist';
 import robloxTsPlugin from 'eslint-plugin-roblox-ts';
+import { dirname } from 'node:path';
 
 /** @type {import("eslint").Linter.FlatConfig} */
 const baseConfig = {
@@ -55,7 +56,7 @@ const typescriptConfig = {
 	languageOptions: {
 		parser: typescriptParser,
 		parserOptions: {
-			project: './packages/*/tsconfig.json',
+			project: `${dirname(new URL(import.meta.url).pathname)}/packages/**/tsconfig.json`,
 			sourceType: 'module',
 		},
 	},
@@ -85,6 +86,8 @@ const robloxTsConfig = {
 	},
 	rules: {
 		...robloxTsPlugin.configs.recommended.rules,
+
+		// Overrides some rules roblox-ts config turns off
 		...typescriptRules,
 
 		// Roblox-ts does not allow this
