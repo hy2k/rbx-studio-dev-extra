@@ -21,10 +21,11 @@ fastify.post(
 	'/submit',
 	{
 		// Accept any object and let Zod handle parsing
-		preValidation: (request, reply) => {
+		preValidation: (request, reply, done) => {
 			if (request.body === null) {
 				reply.status(400).send('Body must not be null');
 			}
+			done();
 		},
 		schema: {
 			body: {
