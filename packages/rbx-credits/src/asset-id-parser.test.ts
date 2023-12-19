@@ -1,14 +1,14 @@
-import { afterEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { getAssetIdsFromData } from './asset-id-parser.js';
 import { logger } from './logger.js';
 
 afterEach(() => {
-	jest.clearAllMocks();
+	vi.clearAllMocks();
 });
 
-jest.spyOn(logger, 'warn').mockImplementation(() => {});
-jest.spyOn(logger, 'info').mockImplementation(() => {});
+vi.spyOn(logger, 'warn').mockImplementation(() => {});
+vi.spyOn(logger, 'info').mockImplementation(() => {});
 
 describe('getAssetIdsFromData', () => {
 	it('should parse asset IDs from data', () => {

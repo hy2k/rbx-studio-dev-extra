@@ -1,7 +1,8 @@
 import type { IFs } from 'memfs';
+import type { Mock } from 'vitest';
 
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Volume, createFsFromVolume } from 'memfs';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { DeveloperProductInfo } from './schema.js';
 
@@ -18,30 +19,27 @@ const asset: Readonly<DeveloperProductInfo> = {
 	Updated: 'test',
 };
 
-jest.spyOn(logger, 'error').mockImplementation(() => {});
-jest.spyOn(logger, 'info').mockImplementation(() => {});
-jest.spyOn(process, 'exit').mockImplementation((_code?: number) => undefined as never);
+vi.spyOn(logger, 'error').mockImplementation(() => {});
+vi.spyOn(logger, 'info').mockImplementation(() => {});
+vi.spyOn(process, 'exit').mockImplementation((_code?: number) => undefined as never);
 
-afterEach(() => {
-	jest.clearAllMocks();
+let vol: InstanceType<typeof Volume>;
+let fs: IFs['promises'];
+
+beforeEach(() => {
+	vi.clearAllMocks();
+	vol = Volume.fromNestedJSON({
+		'test-cache': {
+			'bad-schema.json': JSON.stringify([{}]),
+			'corrupted.json': '{ ',
+			'valid-schema.json': JSON.stringify([asset]),
+		},
+	});
+	fs = createFsFromVolume(vol).promises;
+	vi.mock('node:fs/promises', () => fs);
 });
 
 describe('init', () => {
-	let vol: InstanceType<typeof Volume>;
-	let fs: IFs['promises'];
-
-	beforeEach(() => {
-		vol = Volume.fromNestedJSON({
-			'test-cache': {
-				'bad-schema.json': JSON.stringify([{}]),
-				'corrupted.json': '{ ',
-				'valid-schema': JSON.stringify([asset]),
-			},
-		});
-		fs = createFsFromVolume(vol).promises;
-		jest.unstable_mockModule('node:fs/promises', () => fs);
-	});
-
 	it('should not fail when cache file does not exist', async () => {
 		const { Cache } = await import('./cache.js');
 
@@ -51,8 +49,6 @@ describe('init', () => {
 	});
 
 	it('should fail when cache file is corrupted', async () => {
-		vol.writeFileSync('corrupted.json', '{ ');
-
 		const { Cache } = await import('./cache.js');
 
 		await new Cache('test-cache/corrupted.json').init();
@@ -73,22 +69,13 @@ describe('init', () => {
 	it('should not fail when schema validation passes for cached data', async () => {
 		const { Cache } = await import('./cache.js');
 
-		const cache = await new Cache('test-cache/valid-schema').init();
+		const cache = await new Cache('test-cache/valid-schema.json').init();
 
 		expect(cache.data).toStrictEqual([asset]);
 	});
 });
 
 describe('findById', () => {
-	let vol: InstanceType<typeof Volume>;
-	let fs: IFs['promises'];
-
-	beforeEach(() => {
-		vol = new Volume();
-		fs = createFsFromVolume(vol).promises;
-		jest.unstable_mockModule('node:fs/promises', () => fs);
-	});
-
 	it('should find data by id when findById is called', async () => {
 		const { Cache } = await import('./cache.js');
 
@@ -102,19 +89,13 @@ describe('findById', () => {
 });
 
 describe('writeFile', () => {
-	let vol: InstanceType<typeof Volume>;
-	let fs: IFs['promises'];
-	let writer: jest.Mock;
+	let writer: Mock;
 
 	beforeEach(() => {
-		vol = new Volume();
-		fs = createFsFromVolume(vol).promises;
-		writer = jest.fn();
-		jest.unstable_mockModule('node:fs/promises', () => fs);
+		writer = vi.fn();
 	});
 
 	afterEach(() => {
-		vol.reset();
 		writer.mockRestore();
 	});
 
@@ -124,7 +105,6 @@ describe('writeFile', () => {
 		const cache = await new Cache('test-cache/data.json').init();
 		cache.push(asset);
 
-		// @ts-expect-error - mock
 		await cache.writeFile(writer);
 
 		expect(writer).toHaveBeenCalledWith('test-cache/data.json', JSON.stringify(cache.data), 'utf-8');
@@ -133,19 +113,6 @@ describe('writeFile', () => {
 });
 
 describe('push', () => {
-	let vol: InstanceType<typeof Volume>;
-	let fs: IFs['promises'];
-
-	beforeEach(() => {
-		vol = new Volume();
-		fs = createFsFromVolume(vol).promises;
-		jest.unstable_mockModule('node:fs/promises', () => fs);
-	});
-
-	afterEach(() => {
-		vol.reset();
-	});
-
 	it('should add data when push is called', async () => {
 		const { Cache } = await import('./cache.js');
 

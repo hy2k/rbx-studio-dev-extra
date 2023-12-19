@@ -1,6 +1,6 @@
-import fs from 'node:fs/promises';
+import * as fs from 'node:fs/promises';
 import { homedir } from 'node:os';
-import path from 'node:path';
+import * as path from 'node:path';
 
 import type { RobloxStudioPath } from '../type.js';
 
@@ -10,7 +10,7 @@ async function getVersions(studioRoot: string) {
 	try {
 		return await fs.readdir(path.join(studioRoot, 'Versions'));
 	} catch (err) {
-		throw new InvalidStudioRootError('Versions directory does not exist', {
+		throw new InvalidStudioRootError('Does not exist', {
 			cause: err,
 		});
 	}

@@ -1,8 +1,9 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import type { IFs } from 'memfs';
+
+import { Volume, createFsFromVolume } from 'memfs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { RbxlOptions } from './index.js';
-
-import { OpenRbxlError, open } from './index.js';
 
 const options: Readonly<RbxlOptions> = {
 	// Prevents Roblox Studio from opening in tests.
@@ -12,17 +13,31 @@ const options: Readonly<RbxlOptions> = {
 	checkFn: () => true,
 };
 
-const testPlaceFile = './fixtures/place.rbxl';
+vi.spyOn(console, 'log');
 
-jest.spyOn(console, 'log');
+let vol: InstanceType<typeof Volume>;
+let fs: IFs['promises'];
 
 beforeEach(() => {
-	jest.resetAllMocks();
+	vi.resetAllMocks();
+
+	vol = Volume.fromNestedJSON({
+		'test-places': {
+			'place.rbxl': '',
+		},
+	});
+
+	fs = createFsFromVolume(vol).promises;
+	vi.mock('node:fs/promises', () => fs);
 });
+
+const testPlaceFile = './test-places/place.rbxl';
 
 describe('spawn', () => {
 	it('should call spawn function when force is true', async () => {
-		const fn = jest.fn(async () => {});
+		const fn = vi.fn(async () => {});
+
+		const { open } = await import('./index.js');
 
 		await open(testPlaceFile, { ...options, _spawnFn: fn, force: true });
 
@@ -33,14 +48,18 @@ describe('spawn', () => {
 
 describe('error', () => {
 	it('should throw when place file does not exist', async () => {
-		const fn = open('./fixtures/does-not-exist.rbxl', options);
+		const { OpenRbxlError, open } = await import('./index.js');
+
+		const fn = open('./test-places/does-not-exist.rbxl', options);
 
 		await expect(fn).rejects.toThrow(OpenRbxlError);
 		await expect(fn).rejects.toThrow('Invalid place path');
 	});
 
 	it("should throw when place file isn't a file", async () => {
-		const fn = open('./fixtures', options);
+		const { OpenRbxlError, open } = await import('./index.js');
+
+		const fn = open('./test-places', options);
 
 		await expect(fn).rejects.toThrow(OpenRbxlError);
 		await expect(fn).rejects.toThrow('Not a file');
@@ -49,7 +68,9 @@ describe('error', () => {
 
 describe('check', () => {
 	it('should call check function when force is false', async () => {
-		const fn = jest.fn(() => true);
+		const fn = vi.fn(() => true);
+
+		const { open } = await import('./index.js');
 
 		await open(testPlaceFile, { ...options, checkFn: fn, force: false });
 
@@ -58,7 +79,9 @@ describe('check', () => {
 	});
 
 	it('should not call check function when force is true', async () => {
-		const fn = jest.fn(() => true);
+		const fn = vi.fn(() => true);
+
+		const { open } = await import('./index.js');
 
 		await open(testPlaceFile, { ...options, checkFn: fn, force: true });
 
@@ -68,7 +91,9 @@ describe('check', () => {
 
 describe('log', () => {
 	it('should log before calling spawn function', async () => {
-		const fn = jest.fn(async () => {});
+		const fn = vi.fn(async () => {});
+
+		const { open } = await import('./index.js');
 
 		await open(testPlaceFile, { ...options, _spawnFn: fn, force: true });
 
@@ -76,7 +101,9 @@ describe('log', () => {
 	});
 
 	it('should log when check function is called and returns true', async () => {
-		const fn = jest.fn(() => true);
+		const fn = vi.fn(() => true);
+
+		const { open } = await import('./index.js');
 
 		await open(testPlaceFile, { ...options, checkFn: fn, force: false });
 
@@ -84,7 +111,9 @@ describe('log', () => {
 	});
 
 	it("should not log when check function is called and doesn't return true", async () => {
-		const fn = jest.fn(() => false);
+		const fn = vi.fn(() => false);
+
+		const { open } = await import('./index.js');
 
 		await open(testPlaceFile, { ...options, checkFn: fn, force: false });
 
@@ -94,9 +123,11 @@ describe('log', () => {
 
 describe('log parameter', () => {
 	it('should call the log function passed as a parameter', async () => {
-		const logFn = jest.fn();
-		const checkFn = jest.fn(() => false);
-		const spawnFn = jest.fn(async () => {});
+		const logFn = vi.fn();
+		const checkFn = vi.fn(() => false);
+		const spawnFn = vi.fn(async () => {});
+
+		const { open } = await import('./index.js');
 
 		await open(testPlaceFile, { _spawnFn: spawnFn, checkFn: checkFn, force: false, log: logFn });
 
@@ -104,9 +135,11 @@ describe('log parameter', () => {
 	});
 
 	it('should call the log function when checkFn returns true', async () => {
-		const logFn = jest.fn();
-		const checkFn = jest.fn(() => true);
-		const spawnFn = jest.fn(async () => {});
+		const logFn = vi.fn();
+		const checkFn = vi.fn(() => true);
+		const spawnFn = vi.fn(async () => {});
+
+		const { open } = await import('./index.js');
 
 		await open(testPlaceFile, { _spawnFn: spawnFn, checkFn: checkFn, force: false, log: logFn });
 
