@@ -15,7 +15,7 @@ const asset: Readonly<DeveloperProductInfo> = {
 	Updated: 'test',
 };
 
-describe.only('AssetStore', () => {
+describe('AssetStore', () => {
 	it('should add asset to group when the data does not previously have the group', () => {
 		const assetStore = new AssetStore();
 		const group = 'testGroup';
@@ -25,7 +25,7 @@ describe.only('AssetStore', () => {
 		const assets = assetStore.getByProperty(group);
 		expect(assets).toBeDefined();
 		expect(assets).toHaveLength(1);
-		expect(assets![0]).toBe(asset);
+		expect(assets[0]).toBe(asset);
 	});
 
 	it('should not add duplicate asset to the same group', () => {
@@ -38,7 +38,7 @@ describe.only('AssetStore', () => {
 		const assets = assetStore.getByProperty(group);
 		expect(assets).toBeDefined();
 		expect(assets).toHaveLength(1);
-		expect(assets![0]).toBe(asset);
+		expect(assets[0]).toBe(asset);
 	});
 
 	it('should get assets by property', () => {

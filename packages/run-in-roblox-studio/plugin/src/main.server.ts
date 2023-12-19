@@ -53,7 +53,7 @@ function startTask(serverUrl: string) {
 	}
 }
 
-function endTask(serverUrl: string) {
+function _endTask(serverUrl: string) {
 	const response = HttpService.RequestAsync({
 		Method: 'POST',
 		Url: `${serverUrl}/end`,

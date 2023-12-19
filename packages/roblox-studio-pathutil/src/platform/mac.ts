@@ -8,6 +8,7 @@ export function getRobloxStudioRootMac() {
 	return path.join(homedir(), 'Library', 'Application Support', 'Roblox');
 }
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export async function getRobloxStudioPathMac(_studioRoot: string): Promise<RobloxStudioPath> {
 	// TODO
 	throw new Error('Not implemented');

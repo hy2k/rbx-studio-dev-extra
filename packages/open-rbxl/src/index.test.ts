@@ -10,7 +10,7 @@ const options: Readonly<RbxlOptions> = {
 	_spawnFn: async () => {},
 
 	// Uses fake, platform-agnostic check function in tests.
-	checkFn: async () => {
+	checkFn: () => {
 		return true;
 	},
 };
@@ -32,7 +32,7 @@ describe('open-rbxl', () => {
 	});
 
 	it('should call check function when force is false', async () => {
-		const fn = mock.fn(async () => {
+		const fn = mock.fn(() => {
 			return true;
 		});
 
@@ -43,7 +43,7 @@ describe('open-rbxl', () => {
 	});
 
 	it('should not call check function when force is true', async () => {
-		const fn = mock.fn(async () => {
+		const fn = mock.fn(() => {
 			return true;
 		});
 

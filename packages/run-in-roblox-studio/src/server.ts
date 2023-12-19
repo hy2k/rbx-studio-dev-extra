@@ -3,9 +3,7 @@ import Fastify from 'fastify';
 import { store } from './store.js';
 
 const fastify = Fastify({
-	logger: {
-		
-	}
+	logger: {},
 });
 
 fastify.get('/poll', async (_request, reply) => {
@@ -22,7 +20,7 @@ fastify.post('/end', async (_request, reply) => {
 	reply.status(204).send();
 });
 
-fastify.addHook('onSend', async (request) => {
+fastify.addHook('onSend', (request) => {
 	if (request.url === '/end' && request.method === 'POST') {
 		process.nextTick(() => {
 			process.exit(0);

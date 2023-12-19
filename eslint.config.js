@@ -2,150 +2,26 @@ import eslint from '@eslint/js';
 import typescriptPlugin from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import importPlugin from 'eslint-plugin-import';
+import jestPlugin from 'eslint-plugin-jest';
 import perfectionistPlugin from 'eslint-plugin-perfectionist';
 import robloxTsPlugin from 'eslint-plugin-roblox-ts';
-import path from 'path';
-
-const ignores = ['**/node_modules/*', '**/dist/**', '**/out/**'];
 
 /** @type {import("eslint").Linter.FlatConfig} */
 const baseConfig = {
-	files: ['**/*.ts', '**/*.js', '**/*.mjs'],
-	ignores: ignores,
-	plugins: {
-		perfectionist: perfectionistPlugin,
-	},
+	files: ['**/*'],
 	rules: {
 		...eslint.configs.recommended.rules,
 
 		curly: ['warn', 'all'],
 		'function-paren-newline': ['warn', 'multiline-arguments'],
 		'object-shorthand': ['warn', 'never'],
-
-		'perfectionist/sort-array-includes': [
-			'warn',
-			{
-				order: 'asc',
-				'spread-last': true,
-				type: 'natural',
-			},
-		],
-
-		'perfectionist/sort-classes': [
-			'warn',
-			{
-				groups: [
-					'index-signature',
-					'static-property',
-					'private-property',
-					'property',
-					'constructor',
-					'static-method',
-					'private-method',
-					'static-private-method',
-					'method',
-					['get-method', 'set-method'],
-					'unknown',
-				],
-				order: 'asc',
-				type: 'natural',
-			},
-		],
-
-		'perfectionist/sort-enums': [
-			'warn',
-			{
-				order: 'asc',
-				type: 'natural',
-			},
-		],
-		'perfectionist/sort-exports': [
-			'warn',
-			{
-				order: 'asc',
-				type: 'natural',
-			},
-		],
-		'perfectionist/sort-imports': [
-			'warn',
-			{
-				groups: [
-					'type',
-					['builtin', 'external'],
-					'internal-type',
-					'internal',
-					['parent-type', 'sibling-type', 'index-type'],
-					['parent', 'sibling', 'index'],
-					'object',
-					'unknown',
-				],
-				'newlines-between': 'always',
-				order: 'asc',
-				type: 'natural',
-			},
-		],
-		'perfectionist/sort-interfaces': [
-			'warn',
-			{
-				order: 'asc',
-				type: 'natural',
-			},
-		],
-		'perfectionist/sort-jsx-props': [
-			'warn',
-			{
-				order: 'asc',
-				type: 'natural',
-			},
-		],
-		'perfectionist/sort-maps': [
-			'warn',
-			{
-				order: 'asc',
-				type: 'natural',
-			},
-		],
-		'perfectionist/sort-named-exports': [
-			'warn',
-			{
-				order: 'asc',
-				type: 'natural',
-			},
-		],
-		'perfectionist/sort-named-imports': [
-			'warn',
-			{
-				order: 'asc',
-				type: 'natural',
-			},
-		],
-		'perfectionist/sort-object-types': [
-			'warn',
-			{
-				order: 'asc',
-				type: 'natural',
-			},
-		],
-		'perfectionist/sort-objects': [
-			'warn',
-			{
-				order: 'asc',
-				type: 'natural',
-			},
-		],
-		'perfectionist/sort-union-types': [
-			'warn',
-			{
-				order: 'asc',
-				type: 'natural',
-			},
-		],
 		'prefer-arrow-callback': 'error',
 	},
 };
 
+/** @type {import("eslint").Linter.RulesRecord} */
 const typescriptRules = {
-	...typescriptPlugin.configs.recommended.rules,
+	...typescriptPlugin.configs['recommended-type-checked'].rules,
 
 	'@typescript-eslint/consistent-indexed-object-style': ['warn', 'index-signature'],
 	'@typescript-eslint/consistent-type-imports': [
@@ -156,11 +32,9 @@ const typescriptRules = {
 			prefer: 'type-imports',
 		},
 	],
-
-	'@typescript-eslint/indent': 'off',
 	'@typescript-eslint/method-signature-style': ['warn', 'property'],
+	'@typescript-eslint/no-floating-promises': 'off', // tmp
 	'@typescript-eslint/no-shadow': 'error',
-
 	'@typescript-eslint/no-unused-vars': [
 		'warn',
 		{
@@ -169,24 +43,19 @@ const typescriptRules = {
 			varsIgnorePattern: '^_',
 		},
 	],
-
 	'@typescript-eslint/switch-exhaustiveness-check': 'error',
-	// Perf
-	indent: 'off',
 
 	'no-shadow': 'off',
-
 	'no-unused-vars': 'off',
 };
 
 /** @type {import("eslint").Linter.FlatConfig} */
 const typescriptConfig = {
 	files: ['**/*.ts'],
-	ignores: ignores,
 	languageOptions: {
 		parser: typescriptParser,
 		parserOptions: {
-			project: path.resolve('./tsconfig.json'),
+			project: './packages/*/tsconfig.json',
 			sourceType: 'module',
 		},
 	},
@@ -199,14 +68,13 @@ const typescriptConfig = {
 /** @type  {import("eslint").Linter.FlatConfig} */
 const robloxTsConfig = {
 	files: ['**/plugin/**/*.ts'],
-	ignores: ignores,
+	ignores: ['**/out/**'],
 	languageOptions: {
 		parserOptions: {
 			ecmaFeatures: {
 				jsx: true,
 			},
-			ecmaVersion: 2018,
-			// project: path.resolve(robloxTsPath, 'tsconfig.json'),
+			ecmaVersion: 'latest',
 			project: '**/plugin/tsconfig.json',
 			sourceType: 'module',
 		},
@@ -242,22 +110,67 @@ const importConfig = {
 			},
 		],
 		'import/no-default-export': 'warn',
-
 		'import/no-duplicates': 'warn',
 		'import/no-extraneous-dependencies': ['error', { devDependencies: false }],
 		'import/no-mutable-exports': 'warn',
 	},
 };
 
-const testImportConfig = {
+/** @type {import("eslint").Linter.FlatConfig} */
+const testingConfig = {
 	files: ['**/*.test.*'],
-	rules: {
-		'import/no-extraneous-dependencies': "off",
+	plugins: {
+		jest: jestPlugin,
 	},
+	rules: {
+		...jestPlugin.configs.recommended.rules,
+		'@typescript-eslint/unbound-method': 'off',
+		'import/no-extraneous-dependencies': 'off',
+	},
+};
+
+/**
+ * Ref: https://typescript-eslint.io/linting/troubleshooting/performance-troubleshooting
+ * @type {import("eslint").Linter.FlatConfig}
+ */
+const performanceConfig = {
+	files: ['**/*'],
+	rules: {
+		'@typescript-eslint/indent': 'off',
+		'import/default': 'off',
+		'import/named': 'off',
+		'import/namespace': 'off',
+		'import/no-cycle': 'off',
+		'import/no-deprecated': 'off',
+		'import/no-named-as-default': 'off',
+		'import/no-named-as-default-member': 'off',
+		'import/no-unused-modules': 'off',
+		indent: 'off',
+	},
+};
+
+/** @type {import("eslint").Linter.FlatConfig} */
+const perfectionistConfig = {
+	files: ['**/*'],
+	plugins: {
+		perfectionist: perfectionistPlugin,
+	},
+	rules: Object.entries(perfectionistPlugin.configs['recommended-natural'].rules)
+		.map(([key, value]) => {
+			return [key, ['warn', value[1]]];
+		})
+		.reduce((acc, [key, value]) => {
+			acc[key] = value;
+			return acc;
+		}, {}),
 };
 
 /** @type {import("eslint").Linter.FlatConfig[]} */
 export default [
+	{
+		ignores: ['**/node_modules/**', '**/dist/**'],
+	},
+
 	baseConfig,
 
 	typescriptConfig,
@@ -269,5 +182,7 @@ export default [
 	},
 
 	importConfig,
-	testImportConfig,
+	testingConfig,
+	performanceConfig,
+	perfectionistConfig,
 ];

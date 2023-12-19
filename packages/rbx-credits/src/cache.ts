@@ -36,8 +36,7 @@ export class Cache {
 	async init(): Promise<Cache> {
 		try {
 			const content = await fs.readFile(this.#cachePath, 'utf-8');
-			const data = JSON.parse(content);
-			this.#data = DeveloperProductInfo.array().parse(data);
+			this.#data = DeveloperProductInfo.array().parse(JSON.parse(content));
 		} catch (err) {
 			// instanceof check fails in jest environment
 			// See https://github.com/jestjs/jest/issues/2549

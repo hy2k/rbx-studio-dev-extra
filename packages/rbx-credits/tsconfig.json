@@ -4,6 +4,6 @@
 	"compilerOptions": {
 		"rootDir": "./src",
 		"outDir": "./dist",
-		"removeComments": true,
+		"removeComments": true
 	}
 }

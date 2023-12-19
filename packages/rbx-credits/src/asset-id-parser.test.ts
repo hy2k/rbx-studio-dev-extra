@@ -80,7 +80,7 @@ describe('getAssetIdsFromData', () => {
 	});
 
 	it('should throw an error when data is not shaped like a record', () => {
-		expect(() => getAssetIdsFromData([])).toThrowError('Got invalid data');
+		expect(() => getAssetIdsFromData([])).toThrow('Got invalid data');
 	});
 
 	it('should correctly parse string asset ids', () => {

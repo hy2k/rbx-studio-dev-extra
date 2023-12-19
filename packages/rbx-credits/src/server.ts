@@ -21,7 +21,7 @@ fastify.post(
 	'/submit',
 	{
 		// Accept any object and let Zod handle parsing
-		preValidation: async (request, reply) => {
+		preValidation: (request, reply) => {
 			if (request.body === null) {
 				reply.status(400).send('Body must not be null');
 			}
