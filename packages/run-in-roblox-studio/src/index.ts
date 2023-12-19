@@ -20,7 +20,9 @@ export async function start({ placePath, port, scriptPath }: StartOptions) {
 		}
 	}
 
-	open(placePath, {});
+	open(placePath, {}).catch((err) => {
+		server.log.error(err);
+	});
 
 	const luaSource = await fs.readFile(scriptPath, 'utf8');
 	store.luaSource = luaSource;

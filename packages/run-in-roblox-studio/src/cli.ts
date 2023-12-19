@@ -49,4 +49,7 @@ start({
 	placePath: placePath,
 	port: port,
 	scriptPath: scriptPath,
+}).catch((err) => {
+	console.error(err);
+	process.exit(1);
 });

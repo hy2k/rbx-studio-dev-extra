@@ -53,11 +53,14 @@ function main() {
 				resolve('Ok');
 			});
 
-			promise.finally(() => {
-				debuglog('Completed.');
-
-				// Wait for CLI to remove the plugin
-			});
+			// Wait for CLI to remove the plugin
+			promise
+				.catch((err) => {
+					error(err);
+				})
+				.finally(() => {
+					debuglog('Completed.');
+				});
 		} catch (err) {
 			debugwarn(err);
 			return;

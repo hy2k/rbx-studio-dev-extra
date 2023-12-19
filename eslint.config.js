@@ -34,7 +34,6 @@ const typescriptRules = {
 		},
 	],
 	'@typescript-eslint/method-signature-style': ['warn', 'property'],
-	'@typescript-eslint/no-floating-promises': 'off', // tmp
 	'@typescript-eslint/no-shadow': 'error',
 	'@typescript-eslint/no-unused-vars': [
 		'warn',

@@ -26,4 +26,7 @@ const argv = cli({
 
 open(argv._.rbxlFile, {
 	force: argv.flags.force,
+}).catch((error) => {
+	console.error(error);
+	process.exit(1);
 });

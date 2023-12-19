@@ -76,10 +76,11 @@ export async function open(
 
 	if (!force) {
 		if (await checkFn(placePath)) {
-			console.warn('[open-rbxl] Roblox Studio is already open');
+			console.log('[open-rbxl] Roblox Studio is already open');
 			return;
 		}
 	}
 
-	_spawnFn(placePath);
+	console.log('[open-rbxl] Opening Roblox Studio...');
+	return _spawnFn(placePath);
 }

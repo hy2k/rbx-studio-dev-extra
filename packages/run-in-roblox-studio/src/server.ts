@@ -17,7 +17,7 @@ fastify.post('/start', async (_request, reply) => {
 });
 
 fastify.post('/end', async (_request, reply) => {
-	reply.status(204).send();
+	return reply.status(204).send();
 });
 
 fastify.addHook('onSend', (request) => {
@@ -29,7 +29,7 @@ fastify.addHook('onSend', (request) => {
 });
 
 process.on('SIGINT', () => {
-	fastify.close();
+	void fastify.close();
 });
 
 export const server = fastify;

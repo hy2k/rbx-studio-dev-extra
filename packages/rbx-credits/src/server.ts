@@ -23,7 +23,7 @@ fastify.post(
 		// Accept any object and let Zod handle parsing
 		preValidation: (request, reply, done) => {
 			if (request.body === null) {
-				reply.status(400).send('Body must not be null');
+				void reply.status(400).send('Body must not be null');
 			}
 			done();
 		},
@@ -37,12 +37,15 @@ fastify.post(
 	async (request, reply) => {
 		const data = request.body;
 
-		reply.status(204).send();
-
-		emitAssetCredits(data as object);
 		// Prevent plugin from running multiple times. This may happen when another polling request
 		// is sent before the previous one is finished.
 		isStarted = true;
+
+		emitAssetCredits(data as object).catch((err) => {
+			logger.fatal(err);
+		});
+
+		return reply.status(204).send();
 	},
 );
 
@@ -59,7 +62,8 @@ fastify.addHook('onSend', async (request, reply) => {
 });
 
 process.on('SIGINT', () => {
-	fastify.close();
+	logger.info('SIGINT received, closing server');
+	void fastify.close();
 });
 
 export const server = fastify;
