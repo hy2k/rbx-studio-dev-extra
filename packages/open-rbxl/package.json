@@ -16,8 +16,8 @@
 		"build": "tsc",
 		"watch": "tsc -w --preserveWatchOutput",
 		"clean": "rimraf dist",
-		"test": "node --test",
-		"test:watch": "node --test --watch",
+		"test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+		"test:watch": "npm run test -- --watch",
 		"lint": "eslint src",
 		"prepack": "npm run clean && tsc",
 		"prepublishOnly": "npm run test && npm run lint"

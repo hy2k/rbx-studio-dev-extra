@@ -58,7 +58,7 @@ export async function getRobloxStudioPathInternal({
 			return getRobloxStudioPathMac(studioRoot ?? getRobloxStudioRootMac());
 		}
 		default: {
-			throw new PlatformNotSupportedError(`Platform ${process.platform} isn't supported`);
+			throw new PlatformNotSupportedError(`Platform ${platform} isn't supported`);
 		}
 	}
 }

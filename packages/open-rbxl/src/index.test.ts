@@ -1,5 +1,4 @@
-import * as assert from 'node:assert';
-import { beforeEach, describe, it, mock } from 'node:test';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { RbxlOptions } from './index.js';
 
@@ -10,59 +9,67 @@ const options: Readonly<RbxlOptions> = {
 	_spawnFn: async () => {},
 
 	// Uses fake, platform-agnostic check function in tests.
-	checkFn: () => {
-		return true;
-	},
+	checkFn: () => true,
 };
 
 const testPlaceFile = './fixtures/place.rbxl';
 
+jest.spyOn(console, 'warn');
+
 describe('open-rbxl', () => {
 	beforeEach(() => {
-		mock.restoreAll();
+		jest.resetAllMocks();
 	});
 
 	it('should call spawn function when force is true', async () => {
-		const fn = mock.fn(async () => {});
+		const fn = jest.fn(async () => {});
 
 		await open(testPlaceFile, { ...options, _spawnFn: fn, force: true });
 
-		assert.strictEqual(fn.mock.callCount(), 1);
-		assert.deepStrictEqual(fn.mock.calls[0]?.arguments, [testPlaceFile]);
+		expect(fn).toHaveBeenCalledTimes(1);
+		expect(fn).toHaveBeenCalledWith(testPlaceFile);
 	});
 
 	it('should call check function when force is false', async () => {
-		const fn = mock.fn(() => {
-			return true;
-		});
+		const fn = jest.fn(() => true);
 
 		await open(testPlaceFile, { ...options, checkFn: fn, force: false });
 
-		assert.strictEqual(fn.mock.callCount(), 1);
-		assert.deepStrictEqual(fn.mock.calls[0]?.arguments, [testPlaceFile]);
+		expect(fn).toHaveBeenCalledTimes(1);
+		expect(fn).toHaveBeenCalledWith(testPlaceFile);
 	});
 
 	it('should not call check function when force is true', async () => {
-		const fn = mock.fn(() => {
-			return true;
-		});
+		const fn = jest.fn(() => true);
 
 		await open(testPlaceFile, { ...options, checkFn: fn, force: true });
 
-		assert.strictEqual(fn.mock.callCount(), 0);
+		expect(fn).not.toHaveBeenCalled();
 	});
 
-	it('should throw when place file does not exist', () => {
-		assert.rejects(() => open('./fixtures/does-not-exist.rbxl', options), {
-			message: 'Invalid place path',
-			name: OpenRbxlError.name,
-		});
+	it('should warn when check function is called and returns true', async () => {
+		const fn = jest.fn(() => true);
+
+		await open(testPlaceFile, { ...options, checkFn: fn, force: false });
+
+		expect(console.warn).toHaveBeenCalledWith('[open-rbxl] Roblox Studio is already open');
 	});
 
-	it("should throw when place file isn't a file", () => {
-		assert.rejects(() => open('./fixtures', options), {
-			message: 'Not a file',
-			name: OpenRbxlError.name,
-		});
+	it("should not warn when check function is called and doesn't return true", async () => {
+		const fn = jest.fn(() => false);
+
+		await open(testPlaceFile, { ...options, checkFn: fn, force: false });
+
+		expect(console.warn).not.toHaveBeenCalled();
+	});
+
+	it('should throw when place file does not exist', async () => {
+		await expect(open('./fixtures/does-not-exist.rbxl', options)).rejects.toThrow(
+			new OpenRbxlError('Invalid place path'),
+		);
+	});
+
+	it("should throw when place file isn't a file", async () => {
+		await expect(open('./fixtures', options)).rejects.toThrow(new OpenRbxlError('Not a file'));
 	});
 });

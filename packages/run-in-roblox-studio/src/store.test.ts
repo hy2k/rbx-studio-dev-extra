@@ -1,5 +1,4 @@
-import assert from 'node:assert';
-import { beforeEach, describe, it } from 'node:test';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { TestStore } from './store.js';
 
@@ -14,17 +13,12 @@ describe('run-in-roblox-studio/store', () => {
 		const source = `print(${Math.random()}`;
 		store.luaSource = source;
 
-		assert.strictEqual(store.luaSource, source);
+		expect(store.luaSource).toBe(source);
 	});
 
-	it('should throw when getting luaSource before it is set', () => {
-		assert.throws(
-			() => {
-				store.luaSource;
-			},
-			{
-				message: 'luaSource is not set',
-			},
-		);
+	it('should throw when accessing luaSource before it is set', () => {
+		expect(() => {
+			store.luaSource;
+		}).toThrow('luaSource is not set');
 	});
 });

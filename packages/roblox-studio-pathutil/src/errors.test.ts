@@ -1,5 +1,4 @@
-import assert from 'node:assert';
-import test from 'node:test';
+import { describe, expect, it } from '@jest/globals';
 
 import {
 	InvalidStudioRootError,
@@ -8,26 +7,34 @@ import {
 	StudioNotInstalledError,
 } from './errors.js';
 
-test('StudioPathError should be an instance of Error', () => {
-	const error = new RbxStudioPathError();
-	assert.strictEqual(error.name, RbxStudioPathError.name);
-	assert.strictEqual(error instanceof Error, true);
+describe('RbxStudioPathError', () => {
+	it('should be an instance of Error', () => {
+		const error = new RbxStudioPathError();
+		expect(error.name).toBe(RbxStudioPathError.name);
+		expect(error instanceof Error).toBe(true);
+	});
 });
 
-test('PlatformNotSupportedError should be an instance of StudioPathError', () => {
-	const error = new PlatformNotSupportedError();
-	assert.strictEqual(error.name, PlatformNotSupportedError.name);
-	assert.strictEqual(error instanceof RbxStudioPathError, true);
+describe('PlatformNotSupportedError', () => {
+	it('should be an instance of StudioPathError', () => {
+		const error = new PlatformNotSupportedError();
+		expect(error.name).toBe(PlatformNotSupportedError.name);
+		expect(error instanceof RbxStudioPathError).toBe(true);
+	});
 });
 
-test('InvalidStudioRootError should be an instance of StudioPathError', () => {
-	const error = new InvalidStudioRootError();
-	assert.strictEqual(error.name, InvalidStudioRootError.name);
-	assert.strictEqual(error instanceof RbxStudioPathError, true);
+describe('InvalidStudioRootError', () => {
+	it('should be an instance of StudioPathError', () => {
+		const error = new InvalidStudioRootError();
+		expect(error.name).toBe(InvalidStudioRootError.name);
+		expect(error instanceof RbxStudioPathError).toBe(true);
+	});
 });
 
-test('StudioNotFoundError should be an instance of StudioPathError', () => {
-	const error = new StudioNotInstalledError();
-	assert.strictEqual(error.name, StudioNotInstalledError.name);
-	assert.strictEqual(error instanceof RbxStudioPathError, true);
+describe('StudioNotInstalledError', () => {
+	it('should be an instance of StudioPathError', () => {
+		const error = new StudioNotInstalledError();
+		expect(error.name).toBe(StudioNotInstalledError.name);
+		expect(error instanceof RbxStudioPathError).toBe(true);
+	});
 });
