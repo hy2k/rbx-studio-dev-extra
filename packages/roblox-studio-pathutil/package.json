@@ -15,8 +15,8 @@
 		"test": "vitest run",
 		"test:watch": "vitest watch",
 		"lint": "eslint src",
-		"prepack": "npm run clean && tsc",
-		"prepublishOnly": "npm run test && npm run lint"
+		"prepack": "pnpm run clean && tsc",
+		"prepublishOnly": "pnpm test && pnpm run lint"
 	},
 	"license": "MIT",
 	"dependencies": {

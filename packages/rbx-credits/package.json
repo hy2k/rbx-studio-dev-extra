@@ -13,21 +13,20 @@
 	],
 	"scripts": {
 		"start": "cross-env NODE_ENV=development node bin/rbx-credits.mjs --place rbx-credits.rbxl",
-		"build": "concurrently -c auto \"npm:build:*\"",
+		"build": "concurrently -c auto \"pnpm:build:*\"",
 		"build:ts": "tsc",
-		"build:plugin": "npm run -prefix plugin build",
-		"watch": "concurrently -c auto \"npm:watch:*\"",
+		"build:plugin": "pnpm -C plugin run plugin",
+		"watch": "concurrently -c auto \"pnpm:watch:*\"",
 		"watch:ts": "tsc -w --preserveWatchOutput",
-		"watch:plugin": "npm run -prefix plugin watch",
+		"watch:plugin": "pnpm -C plugin run watch",
 		"watch:place": "rojo build -o rbx-credits.rbxl --watch",
 		"serve": "rojo serve",
 		"clean": "rimraf dist",
 		"test": "vitest run",
 		"test:watch": "vitest watch",
 		"lint": "eslint src",
-		"prepack": "npm run clean && tsc",
-		"prepublishOnly": "npm run test && npm run lint",
-		"postinstall": "npm i -prefix plugin"
+		"prepack": "pnpm run clean && tsc",
+		"prepublishOnly": "pnpm test && pnpm run lint"
 	},
 	"license": "MIT",
 	"dependencies": {

@@ -12,20 +12,19 @@
 	],
 	"scripts": {
 		"start": "cross-env NODE_ENV=development node bin/run-in-roblox-studio.mjs --place run-in-roblox-studio.rbxl --script script.server.lua",
-		"build": "concurrently -c auto \"npm:build:*\"",
+		"build": "concurrently -c auto \"pnpm:build:*\"",
 		"build:ts": "tsc",
-		"build:plugin": "npm run -prefix plugin build",
-		"watch": "concurrently -c auto \"npm:watch:*\"",
+		"build:plugin": "pnpm -C plugin run plugin",
+		"watch": "concurrently -c auto \"pnpm:watch:*\"",
 		"watch:ts": "tsc -w --preserveWatchOutput",
-		"watch:plugin": "npm run -prefix plugin watch",
+		"watch:plugin": "pnpm -C plugin run watch",
 		"watch:place": "rojo build -o run-in-roblox-studio.rbxl --watch",
 		"clean": "rimraf dist",
 		"test": "vitest run",
 		"test:watch": "vitest watch",
 		"lint": "eslint src",
-		"prepack": "npm run clean && tsc",
-		"prepublishOnly": "npm run test && npm run lint",
-		"prepare": "npm i -prefix plugin"
+		"prepack": "pnpm run clean && tsc",
+		"prepublishOnly": "pnpm test && pnpm run lint"
 	},
 	"license": "MIT",
 	"dependencies": {

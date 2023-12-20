@@ -1,4 +1,4 @@
-import type { DeveloperProductInfo } from './schema';
+import type { DeveloperProductInfo } from './schema.js';
 
 export class AssetStore {
 	#data = new Map<string, DeveloperProductInfo[]>();

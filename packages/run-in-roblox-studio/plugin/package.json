@@ -1,15 +1,15 @@
 {
-	"name": "plugin",
-	"version": "0.0.1",
+	"name": "run-in-roblox-plugin",
 	"private": true,
-	"description": "",
 	"scripts": {
-		"build": "concurrently -c auto -m 1 \"npm:build:*\"",
-		"build:ts": "rbxtsc --type model",
-		"build:rbxm": "rojo build -o plugin.rbxm",
-		"watch": "concurrently -c auto \"npm:watch:*\"",
-		"watch:ts": "npm run build:ts -- --watch",
-		"watch:rbxm": "node ./scripts/watch-plugin.mjs"
+		"plugin": "pnpm run clean && concurrently -c auto -m 1 \"pnpm:plugin:*\"",
+		"plugin:ts": "rbxtsc --type model",
+		"plugin:rbxm": "rojo build -o plugin.rbxm",
+		"clean": "rimraf out",
+		"watch": "concurrently -c auto \"pnpm:watch:*\"",
+		"watch:ts": "pnpm run plugin:ts -- --watch",
+		"watch:rbxm": "pnpm run plugin:rbxm -- --watch",
+		"postinstall": "pnpm run plugin"
 	},
 	"license": "MIT",
 	"dependencies": {

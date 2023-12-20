@@ -4,17 +4,14 @@
 	"type": "module",
 	"version": "0.0.1",
 	"license": "MIT",
-	"workspaces": [
-		"packages/*"
-	],
 	"devDependencies": {
 		"@rbxts/compiler-types": "^2.2.0-types.0",
 		"@rbxts/types": "^1.0.737",
-		"@types/node": "^20.10.4",
+		"@types/node": "^20.10.5",
 		"concurrently": "^8.2.2",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.55.0",
-		"eslint-config-y2": "^0.0.4",
+		"eslint": "^8.56.0",
+		"eslint-config-y2": "^0.0.5",
 		"eslint-plugin-vitest": "^0.3.18",
 		"execa": "^8.0.1",
 		"memfs": "^4.6.0",
@@ -32,11 +29,10 @@
 		"useTabs": true
 	},
 	"scripts": {
-		"build": "npm run build --workspaces --if-present",
-		"watch": "node scripts/concurrently.mjs watch",
-		"test": "npm run test --workspaces --if-present",
+		"build": "pnpm -r --if-present run build",
+		"test": "pnpm -r --if-present run test",
 		"lint": "eslint --cache \"**/*.{ts,js,mjs}\"",
-		"fix": "npm run lint -- --fix",
+		"fix": "pnpm run lint -- --fix",
 		"format": "prettier --write \"**/*.{ts,json}\""
 	}
 }
