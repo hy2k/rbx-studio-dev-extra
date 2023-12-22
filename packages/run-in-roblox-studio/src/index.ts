@@ -13,6 +13,9 @@ interface StartOptions {
 let cleanupPlugin = () => {};
 
 export async function start({ port, scriptPath }: StartOptions) {
+	const luaSource = await readFile(scriptPath, 'utf8');
+	store.luaSource = luaSource;
+
 	copyPlugin()
 		.then((cleanup) => {
 			cleanupPlugin = cleanup;
@@ -26,9 +29,6 @@ export async function start({ port, scriptPath }: StartOptions) {
 	} catch (err) {
 		server.log.error(err);
 	}
-
-	const luaSource = await readFile(scriptPath, 'utf8');
-	store.luaSource = luaSource;
 }
 
 process.on('SIGINT', () => {

@@ -17,12 +17,13 @@ fastify.post('/stop', async (_request, reply) => {
 	return reply.status(204).send();
 });
 
-fastify.addHook('onSend', (request) => {
+fastify.addHook('onResponse', (request, _reply, done) => {
 	if (request.url === '/stop' && request.method === 'POST') {
 		process.nextTick(() => {
 			process.exit(0);
 		});
 	}
+	done();
 });
 
 export const server = fastify;
