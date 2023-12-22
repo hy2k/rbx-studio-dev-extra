@@ -32,7 +32,7 @@
 		"build": "pnpm -r --if-present run build",
 		"test": "pnpm -r --if-present run test",
 		"lint": "eslint --cache \"**/*.{ts,js,mjs}\"",
-		"fix": "pnpm run lint -- --fix",
+		"fix": "pnpm run lint --fix",
 		"format": "prettier --write \"**/*.{ts,json}\""
 	}
 }

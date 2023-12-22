@@ -1,14 +1,14 @@
 {
-	"name": "run-in-roblox-plugin",
+	"name": "run-in-roblox-studio-plugin",
 	"private": true,
 	"scripts": {
 		"plugin": "pnpm run clean && concurrently -c auto -m 1 \"pnpm:plugin:*\"",
 		"plugin:ts": "rbxtsc --type model",
-		"plugin:rbxm": "rojo build -o plugin.rbxm",
+		"plugin:rbxm": "rojo build -o run-in-roblox-studio.rbxm",
 		"clean": "rimraf out",
 		"watch": "concurrently -c auto \"pnpm:watch:*\"",
-		"watch:ts": "pnpm run plugin:ts -- --watch",
-		"watch:rbxm": "pnpm run plugin:rbxm -- --watch",
+		"watch:ts": "pnpm run plugin:ts --watch",
+		"watch:rbxm": "pnpm run plugin:rbxm --watch",
 		"postinstall": "pnpm run plugin"
 	},
 	"license": "MIT",

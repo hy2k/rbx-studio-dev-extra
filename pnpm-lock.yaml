@@ -120,6 +120,12 @@ importers:
       open-rbxl:
         specifier: ^0.0.4
         version: link:../open-rbxl
+      pino:
+        specifier: ^8.17.1
+        version: 8.17.1
+      roblox-studio-pathutil:
+        specifier: workspace:^0.0.3
+        version: link:../roblox-studio-pathutil
 
   packages/run-in-roblox-studio/plugin:
     dependencies:

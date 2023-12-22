@@ -1,8 +1,11 @@
 import { cli as cleye } from 'cleye';
 import * as fs from 'node:fs';
+import { open } from 'open-rbxl';
 
 import pkg from '../package.json' with { type: 'json' };
-import { start } from './index.js';
+import { startServer } from './index.js';
+import { logger } from './logger.js';
+import { copyPlugin } from './plugin.js';
 
 function File(str: string) {
 	const stat = fs.statSync(str);
@@ -45,11 +48,19 @@ if (!placePath || !scriptPath) {
 	process.exit(1);
 }
 
-start({
-	placePath: placePath,
+startServer({
 	port: port,
 	scriptPath: scriptPath,
 }).catch((err) => {
-	console.error(err);
+	logger.fatal(err);
 	process.exit(1);
+});
+
+copyPlugin().catch((err) => {
+	logger.fatal(err);
+	process.exit(1);
+});
+
+open(placePath, {}).catch((err) => {
+	logger.fatal(err);
 });

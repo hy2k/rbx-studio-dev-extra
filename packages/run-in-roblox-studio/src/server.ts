@@ -1,9 +1,10 @@
 import Fastify from 'fastify';
 
+import { logger } from './logger.js';
 import { store } from './store.js';
 
 const fastify = Fastify({
-	logger: {},
+	logger: logger,
 });
 
 fastify.get('/poll', async (_request, reply) => {
@@ -29,6 +30,7 @@ fastify.addHook('onSend', (request) => {
 });
 
 process.on('SIGINT', () => {
+	logger.info('SIGINT received, closing server');
 	void fastify.close();
 });
 
