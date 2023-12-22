@@ -8,8 +8,7 @@
 		"clean": "rimraf out",
 		"watch": "pnpm run plugin:ts && concurrently -c auto \"pnpm:watch:*\"",
 		"watch:ts": "pnpm run plugin:ts --watch",
-		"watch:rbxm": "pnpm run plugin:rbxm --watch",
-		"postinstall": "pnpm run plugin"
+		"watch:rbxm": "pnpm run plugin:rbxm --watch"
 	},
 	"license": "MIT",
 	"dependencies": {

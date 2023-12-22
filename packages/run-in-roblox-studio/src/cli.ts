@@ -3,9 +3,8 @@ import * as fs from 'node:fs';
 import { open } from 'open-rbxl';
 
 import pkg from '../package.json' with { type: 'json' };
-import { startServer } from './index.js';
+import { start } from './index.js';
 import { logger } from './logger.js';
-import { copyPlugin } from './plugin.js';
 
 function File(str: string) {
 	const stat = fs.statSync(str);
@@ -24,7 +23,7 @@ const cli = cleye({
 		},
 		port: {
 			alias: 'p',
-			default: 34567,
+			default: 14105,
 			description: 'Port to use for the server',
 			type: Number,
 		},
@@ -48,7 +47,7 @@ if (!placePath || !scriptPath) {
 	process.exit(1);
 }
 
-startServer({
+start({
 	port: port,
 	scriptPath: scriptPath,
 }).catch((err) => {
@@ -56,11 +55,7 @@ startServer({
 	process.exit(1);
 });
 
-copyPlugin().catch((err) => {
-	logger.fatal(err);
-	process.exit(1);
-});
-
 open(placePath, {}).catch((err) => {
 	logger.fatal(err);
+	process.exit(1);
 });

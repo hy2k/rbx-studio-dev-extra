@@ -10,13 +10,18 @@ const SERVER_URL = `http://127.0.0.1:${config.port}`;
 const getURL = (route: string) => `${SERVER_URL}/${route}`;
 
 function poll() {
-	const response = HttpService.RequestAsync({
-		Method: 'GET',
-		Url: getURL('poll'),
-	});
+	try {
+		const response = HttpService.RequestAsync({
+			Method: 'GET',
+			Url: getURL('poll'),
+		});
 
-	if (!response.Success) {
-		throw 'Failed to poll';
+		if (!response.Success) {
+			throw 'Failed to poll';
+		}
+	} catch (err) {
+		debugwarn(err);
+		return;
 	}
 }
 

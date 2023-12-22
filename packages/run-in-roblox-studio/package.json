@@ -20,6 +20,7 @@
 		"watch:ts": "tsc -w --preserveWatchOutput",
 		"watch:plugin": "pnpm -C plugin run watch",
 		"watch:place": "rojo build -o run-in-roblox-studio.rbxl --watch",
+		"serve": "rojo serve",
 		"clean": "rimraf dist",
 		"test": "vitest run",
 		"test:watch": "vitest watch",

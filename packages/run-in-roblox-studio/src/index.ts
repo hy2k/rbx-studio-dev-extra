@@ -1,6 +1,7 @@
-import * as fs from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 
-import { IS_DEV } from './constants.js';
+import { logger } from './logger.js';
+import { copyPlugin } from './plugin.js';
 import { server } from './server.js';
 import { store } from './store.js';
 
@@ -9,15 +10,33 @@ interface StartOptions {
 	scriptPath: string;
 }
 
-export async function startServer({ port, scriptPath }: StartOptions) {
+let cleanupPlugin = () => {};
+
+export async function start({ port, scriptPath }: StartOptions) {
+	copyPlugin()
+		.then((cleanup) => {
+			cleanupPlugin = cleanup;
+		})
+		.catch((err) => {
+			logger.fatal(err);
+		});
+
 	try {
 		await server.listen({ port: port });
 	} catch (err) {
-		if (IS_DEV) {
-			server.log.error(err);
-		}
+		server.log.error(err);
 	}
 
-	const luaSource = await fs.readFile(scriptPath, 'utf8');
+	const luaSource = await readFile(scriptPath, 'utf8');
 	store.luaSource = luaSource;
 }
+
+process.on('SIGINT', () => {
+	logger.info('SIGINT received, closing server');
+
+	cleanupPlugin();
+
+	void server.close();
+
+	process.exit(0);
+});

@@ -1,6 +1,6 @@
 import { config } from './config';
 
-const PREFIX = '[rbx-in-roblox-studio]';
+const PREFIX = '[run-in-roblox-studio]';
 
 export function debuglog(...args: unknown[]) {
 	if (!config.debugMode) {

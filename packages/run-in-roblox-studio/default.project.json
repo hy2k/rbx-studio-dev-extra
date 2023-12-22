@@ -1,12 +1,27 @@
 {
-	"name": "place",
+	"name": "run-in-roblox-studio-serve",
 	"globIgnorePaths": ["**/package.json", "**/tsconfig.json"],
 	"tree": {
 		"$className": "DataModel",
 		"Workspace": {
-			"$className": "Workspace",
-			"Project": {
-				"$className": "Folder"
+			"$className": "Workspace"
+		},
+		"HttpService": {
+			"$className": "HttpService",
+			"$properties": {
+				"HttpEnabled": true
+			}
+		},
+		"ServerStorage": {
+			"$className": "ServerStorage",
+			"PluginConfig": {
+				"$className": "Folder",
+				"run-in-roblox-studio": {
+					"$className": "Configuration",
+					"$attributes": {
+						"debugMode": true
+					}
+				}
 			}
 		}
 	}

@@ -7,6 +7,12 @@
 			"$className": "Workspace",
 			"$path": "./fixtures/Workspace"
 		},
+		"HttpService": {
+			"$className": "HttpService",
+			"$properties": {
+				"HttpEnabled": true
+			}
+		},
 		"ServerStorage": {
 			"$className": "ServerStorage",
 			"$path": "./fixtures/ServerStorage",

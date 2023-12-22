@@ -18,10 +18,10 @@ export async function copyPlugin() {
 	await fs.promises.copyFile(pluginSrc, dest);
 	logger.info(`Copied plugin to ${dest}`);
 
-	process.on('exit', () => {
+	return () => {
 		if (fs.existsSync(dest)) {
 			logger.info(`Cleaning up ${dest}`);
 			fs.rmSync(dest);
 		}
-	});
+	};
 }

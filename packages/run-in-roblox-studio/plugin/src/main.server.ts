@@ -1,15 +1,42 @@
-import { HttpService } from '@rbxts/services';
+import { HttpService, RunService } from '@rbxts/services';
+import { setInterval } from '@rbxts/set-timeout';
 import { t } from '@rbxts/t';
 
-const PREFIX = '[run-in-roblox-studio]';
-const DEFAULT_POLL_INTERVAL = 5;
-const DEFAULT_PORT = 34567;
+import { config } from './config';
+import { debuglog, debugwarn } from './debug';
 
-const debugConfig = script.Parent?.FindFirstChild('Debug');
-const isDebug = debugConfig?.IsA('BoolValue') ? debugConfig.Value : false;
+const SERVER_URL = `http://127.0.0.1:${config.port}`;
 
-if (isDebug) {
-	print(PREFIX, 'Started with debug mode enabled');
+const getURL = (route: string) => `${SERVER_URL}/${route}`;
+
+function main() {
+	debuglog('Started with debug mode enabled');
+
+	let isRunning = false;
+
+	setInterval(() => {
+		if (isRunning) {
+			return;
+		}
+
+		const [ok, response] = pcall(start);
+		if (!ok) {
+			debugwarn(response);
+			return;
+		}
+
+		isRunning = true;
+
+		debuglog('Got response from server, starting script');
+
+		const source = bodyParser(response);
+
+		runScript(source);
+
+		debuglog('Script finished, stopping server');
+
+		stop();
+	}, config.pollInterval);
 }
 
 function createModuleScript(source: string) {
@@ -22,24 +49,20 @@ function createModuleScript(source: string) {
 	return module;
 }
 
-function startTask(serverUrl: string) {
+function start() {
 	const response = HttpService.RequestAsync({
 		Method: 'POST',
-		Url: `${serverUrl}/start`,
+		Url: getURL('start'),
 	});
 
 	if (!response.Success) {
 		throw 'Failed to start';
 	}
 
-	const body = HttpService.JSONDecode(response.Body);
-	const bodyCheck = t.strictInterface({
-		source: t.string,
-	});
-	assert(bodyCheck(body));
+	return response;
+}
 
-	const { source } = body;
-
+function runScript(source: string) {
 	const module = createModuleScript(source);
 
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -53,62 +76,29 @@ function startTask(serverUrl: string) {
 	}
 }
 
-function _endTask(serverUrl: string) {
+function bodyParser(response: RequestAsyncResponse) {
+	const body = HttpService.JSONDecode(response.Body);
+	const bodyCheck = t.strictInterface({
+		source: t.string,
+	});
+	assert(bodyCheck(body));
+
+	const { source } = body;
+
+	return source;
+}
+
+function stop() {
 	const response = HttpService.RequestAsync({
 		Method: 'POST',
-		Url: `${serverUrl}/end`,
+		Url: getURL('stop'),
 	});
 
 	if (!response.Success) {
-		throw 'Failed to end';
+		throw 'Failed to stop';
 	}
 }
 
-function poll(serverUrl: string) {
-	const response = HttpService.RequestAsync({
-		Method: 'GET',
-		Url: `${serverUrl}/poll`,
-	});
-
-	if (!response.Success) {
-		throw 'Failed to poll';
-	}
-}
-
-let isFirstRun = true;
-let isRunning = false;
-
-// eslint-disable-next-line no-constant-condition
-while (true) {
-	if (!isFirstRun) {
-		task.wait(DEFAULT_POLL_INTERVAL);
-	}
-	isFirstRun = false;
-
-	if (isRunning) {
-		continue;
-	}
-
-	// TODO: Allow custom port to be set in the plugin setting
-	const serverUrl = `http://127.0.0.1:${DEFAULT_PORT}`;
-
-	try {
-		poll(serverUrl);
-	} catch (err) {
-		if (isDebug) {
-			warn(PREFIX, err);
-		}
-		continue;
-	}
-
-	isRunning = true;
-	try {
-		startTask(serverUrl);
-	} catch (err) {
-		if (isDebug) {
-			warn(PREFIX, err);
-		}
-		isRunning = false;
-		continue;
-	}
+if (RunService.IsStudio() && RunService.IsEdit()) {
+	main();
 }
