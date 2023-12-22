@@ -1,9 +1,13 @@
 import { pino } from 'pino';
 
-export const logger = pino({
-	level: process.env.NODE_ENV === 'development' ? 'trace' : 'warn',
+const isDev = process.env.NODE_ENV === 'development';
 
-	transport: {
-		target: 'pino-pretty',
-	},
+export const logger = pino({
+	level: isDev ? 'trace' : 'warn',
+
+	transport: isDev
+		? {
+				target: 'pino-pretty',
+			}
+		: undefined,
 });
