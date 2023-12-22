@@ -1,4 +1,8 @@
-# Develop
+# Roblox Studio Development Extra Tools
+
+Helper for Roblox development for fully-managed Rojo projects.
+
+## Develop
 
 WSL users must set `ROBLOX_STUDIO_PATH` enviroment variable.
 
