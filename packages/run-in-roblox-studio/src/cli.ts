@@ -48,6 +48,7 @@ if (!placePath || !scriptPath) {
 }
 
 start({
+	placePath: placePath,
 	port: port,
 	scriptPath: scriptPath,
 }).catch((err) => {

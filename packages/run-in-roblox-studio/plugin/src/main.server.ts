@@ -27,7 +27,7 @@ function main() {
 
 		isRunning = true;
 
-		debuglog('Got response from server, starting script');
+		debuglog('Request to start completed.');
 
 		const source = bodyParser(response);
 
@@ -50,13 +50,25 @@ function createModuleScript(source: string) {
 }
 
 function start() {
-	const response = HttpService.RequestAsync({
-		Method: 'POST',
-		Url: getURL('start'),
+	const [ok, response] = pcall(() => {
+		return HttpService.RequestAsync({
+			Body: HttpService.JSONEncode({
+				placeName: game.Name,
+			}),
+			Headers: {
+				['Content-Type']: 'application/json',
+			},
+			Method: 'POST',
+			Url: getURL('start'),
+		});
 	});
 
+	if (!ok) {
+		throw response;
+	}
+
 	if (!response.Success) {
-		throw 'Failed to start';
+		throw response;
 	}
 
 	return response;

@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { basename } from 'node:path';
 
 import { logger } from './logger.js';
 import { copyPlugin } from './plugin.js';
@@ -6,15 +7,17 @@ import { server } from './server.js';
 import { store } from './store.js';
 
 interface StartOptions {
+	placePath: string;
 	port: number;
 	scriptPath: string;
 }
 
 let cleanupPlugin = () => {};
 
-export async function start({ port, scriptPath }: StartOptions) {
+export async function start({ placePath, port, scriptPath }: StartOptions) {
 	const luaSource = await readFile(scriptPath, 'utf8');
 	store.luaSource = luaSource;
+	store.placeName = basename(placePath);
 
 	copyPlugin()
 		.then((cleanup) => {
