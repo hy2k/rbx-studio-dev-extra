@@ -3,7 +3,7 @@ import { basename } from 'node:path';
 
 import { logger } from './logger.js';
 import { copyPlugin } from './plugin.js';
-import { server } from './server.js';
+import { getServer } from './server.js';
 import { store } from './store.js';
 
 interface StartOptions {
@@ -13,6 +13,10 @@ interface StartOptions {
 }
 
 let cleanupPlugin = () => {};
+
+const server = getServer({
+	logger: logger,
+});
 
 export async function start({ placePath, port, scriptPath }: StartOptions) {
 	const luaSource = await readFile(scriptPath, 'utf8');
