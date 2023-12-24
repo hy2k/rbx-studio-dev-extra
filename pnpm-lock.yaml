@@ -27,8 +27,8 @@ importers:
         specifier: ^8.56.0
         version: 8.56.0
       eslint-config-y2:
-        specifier: ^0.0.5
-        version: 0.0.5(eslint@8.56.0)(typescript@5.3.3)
+        specifier: ^0.0.6
+        version: 0.0.6(eslint@8.56.0)(typescript@5.3.3)
       eslint-plugin-vitest:
         specifier: ^0.3.18
         version: 0.3.18(eslint@8.56.0)(typescript@5.3.3)(vitest@1.1.0)
@@ -63,8 +63,8 @@ importers:
         specifier: ^1.3.2
         version: 1.3.2
       roblox-studio-pathutil:
-        specifier: ^0.0.3
-        version: link:../roblox-studio-pathutil
+        specifier: ^0.0.4
+        version: 0.0.4
 
   packages/rbx-credits:
     dependencies:
@@ -79,13 +79,13 @@ importers:
         version: 1.1.3
       open-rbxl:
         specifier: ^0.0.4
-        version: link:../open-rbxl
+        version: 0.0.4
       pino:
         specifier: ^8.17.1
         version: 8.17.1
       roblox-studio-pathutil:
-        specifier: ^0.0.3
-        version: link:../roblox-studio-pathutil
+        specifier: ^0.0.4
+        version: 0.0.4
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -119,13 +119,13 @@ importers:
         version: 4.25.1
       open-rbxl:
         specifier: ^0.0.4
-        version: link:../open-rbxl
+        version: 0.0.4
       pino:
         specifier: ^8.17.1
         version: 8.17.1
       roblox-studio-pathutil:
-        specifier: workspace:^0.0.3
-        version: link:../roblox-studio-pathutil
+        specifier: ^0.0.4
+        version: 0.0.4
 
   packages/run-in-roblox-studio/plugin:
     dependencies:
@@ -1482,8 +1482,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /eslint-config-y2@0.0.5(eslint@8.56.0)(typescript@5.3.3):
-    resolution: {integrity: sha512-4j3aQKbmckr1uH7gamHzDWJrurMOX7HlTjpg99g2kVrR08kT+Lp3SL/t40O9BqnMjfwK768iMECtjrzKwWDdpw==}
+  /eslint-config-y2@0.0.6(eslint@8.56.0)(typescript@5.3.3):
+    resolution: {integrity: sha512-g6j8+vYu9jhPota2uhhYnqOJv503IGP5zQrLypQf8hX9c3l5pVu2YPe+UKq79IKFs0J+rGZFxacwJLvqW+2LUw==}
     peerDependencies:
       eslint: ^8.56.0
       typescript: ^5.3.3
@@ -2674,6 +2674,14 @@ packages:
       mimic-fn: 4.0.0
     dev: true
 
+  /open-rbxl@0.0.4:
+    resolution: {integrity: sha512-OOxs6jU6dbaihnsrc5M8fNqk2AHMZ60KugvnN8f0LOPjQvl0Sq+WaSDjAaGR9NM1CkngiWp76gNL9kGUB0hF9A==}
+    hasBin: true
+    dependencies:
+      cleye: 1.3.2
+      roblox-studio-pathutil: 0.0.3
+    dev: false
+
   /optionator@0.9.3:
     resolution: {integrity: sha512-JjCoypp+jKn1ttEFExxhetCKeJt9zhAgAve5FXHixTvFDW/5aEktX9bufBKLRRMdU7bNtpLfcGu94B3cdEJgjg==}
     engines: {node: '>= 0.8.0'}
@@ -2997,6 +3005,18 @@ packages:
     dependencies:
       glob: 10.3.10
     dev: true
+
+  /roblox-studio-pathutil@0.0.3:
+    resolution: {integrity: sha512-n1/yRMcjGD7s/wYGtzKUn5kZ/sqW26n4FWo5YbKb0XVMWyOdWlFfnGhIrKLjqQt9j1zUdNrllfa5RHvz70r74g==}
+    dependencies:
+      is-wsl: 3.1.0
+    dev: false
+
+  /roblox-studio-pathutil@0.0.4:
+    resolution: {integrity: sha512-7dzURKLckpJFTVLA2auCfRp0RCZbZLYyW88jtn2YYLivjxnDg2BdOMh8xbJR0SpnTzLoN3Jt9WO4IrKGsjgKeQ==}
+    dependencies:
+      is-wsl: 3.1.0
+    dev: false
 
   /roblox-ts@2.2.0:
     resolution: {integrity: sha512-c28Ptmje50456pqyhE7WsxU0cYLH63qwKLqbz6Sit53bm1Xry/gUiqlho7fFnwW/os9Npk8bjYl8Oom46maZtQ==}

@@ -34,6 +34,6 @@
 		"fastify": "^4.25.0",
 		"open-rbxl": "^0.0.4",
 		"pino": "^8.17.1",
-		"roblox-studio-pathutil": "workspace:^0.0.3"
+		"roblox-studio-pathutil": "^0.0.4"
 	}
 }

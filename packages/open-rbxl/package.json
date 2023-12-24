@@ -25,6 +25,6 @@
 	"license": "MIT",
 	"dependencies": {
 		"cleye": "^1.3.2",
-		"roblox-studio-pathutil": "^0.0.3"
+		"roblox-studio-pathutil": "^0.0.4"
 	}
 }
