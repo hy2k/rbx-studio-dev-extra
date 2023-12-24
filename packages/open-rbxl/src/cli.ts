@@ -1,7 +1,7 @@
 import { cli } from 'cleye';
 
 import pkg from '../package.json' with { type: 'json' };
-import { open } from './index.js';
+import { openRbxl } from './index.js';
 
 const argv = cli({
 	flags: {
@@ -24,7 +24,7 @@ const argv = cli({
 	version: pkg.version,
 });
 
-open(argv._.rbxlFile, {
+openRbxl(argv._.rbxlFile, {
 	force: argv.flags.force,
 }).catch((error) => {
 	console.error(error);

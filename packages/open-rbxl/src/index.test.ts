@@ -6,11 +6,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RbxlOptions } from './index.js';
 
 const options: Readonly<RbxlOptions> = {
-	// Prevents Roblox Studio from opening in tests.
-	_spawnFn: async () => {},
-
 	// Uses fake, platform-agnostic check function in tests.
-	checkFn: () => true,
+	handleCheck: () => true,
+
+	// Prevents Roblox Studio from opening in tests.
+	handleSpawn: async () => {},
 };
 
 vi.spyOn(console, 'log');
@@ -22,24 +22,25 @@ beforeEach(() => {
 	vi.resetAllMocks();
 
 	vol = Volume.fromNestedJSON({
-		'test-places': {
-			'place.rbxl': '',
-		},
+		folder: {},
+		'not-place.rbxm': '',
+		'place.rbxl': '',
+		'place.rbxlx': '',
 	});
 
 	fs = createFsFromVolume(vol).promises;
 	vi.mock('node:fs/promises', () => fs);
 });
 
-const testPlaceFile = './test-places/place.rbxl';
+const testPlaceFile = 'place.rbxl';
 
 describe('spawn', () => {
 	it('should call spawn function when force is true', async () => {
 		const fn = vi.fn(async () => {});
 
-		const { open } = await import('./index.js');
+		const { openRbxl } = await import('./index.js');
 
-		await open(testPlaceFile, { ...options, _spawnFn: fn, force: true });
+		await openRbxl(testPlaceFile, { ...options, force: true, handleSpawn: fn });
 
 		expect(fn).toHaveBeenCalledTimes(1);
 		expect(fn).toHaveBeenCalledWith(testPlaceFile);
@@ -48,21 +49,38 @@ describe('spawn', () => {
 
 describe('error', () => {
 	it('should throw when place file does not exist', async () => {
-		const { OpenRbxlError, open } = await import('./index.js');
+		const { OpenRbxlError, openRbxl } = await import('./index.js');
 
-		const fn = open('./test-places/does-not-exist.rbxl', options);
+		const fn = openRbxl('does-not-exist.rbxl', options);
 
 		await expect(fn).rejects.toThrow(OpenRbxlError);
 		await expect(fn).rejects.toThrow('Invalid place path');
 	});
 
 	it("should throw when place file isn't a file", async () => {
-		const { OpenRbxlError, open } = await import('./index.js');
+		const { OpenRbxlError, openRbxl } = await import('./index.js');
 
-		const fn = open('./test-places', options);
+		const fn = openRbxl('folder', options);
 
 		await expect(fn).rejects.toThrow(OpenRbxlError);
 		await expect(fn).rejects.toThrow('Not a file');
+	});
+
+	it("should throw when place file isn't a .rbxl or .rbxlx file", async () => {
+		const { OpenRbxlError, openRbxl } = await import('./index.js');
+
+		const fn = openRbxl('not-place.rbxm', options);
+
+		await expect(fn).rejects.toThrow(OpenRbxlError);
+		await expect(fn).rejects.toThrow('Must be a .rbxl or .rbxlx file');
+	});
+
+	it('should not throw when place file is rbxlx', async () => {
+		const { openRbxl } = await import('./index.js');
+
+		const fn = openRbxl('place.rbxlx', options);
+
+		await expect(fn).resolves.toBeUndefined();
 	});
 });
 
@@ -70,9 +88,9 @@ describe('check', () => {
 	it('should call check function when force is false', async () => {
 		const fn = vi.fn(() => true);
 
-		const { open } = await import('./index.js');
+		const { openRbxl } = await import('./index.js');
 
-		await open(testPlaceFile, { ...options, checkFn: fn, force: false });
+		await openRbxl(testPlaceFile, { ...options, force: false, handleCheck: fn });
 
 		expect(fn).toHaveBeenCalledTimes(1);
 		expect(fn).toHaveBeenCalledWith(testPlaceFile);
@@ -81,9 +99,9 @@ describe('check', () => {
 	it('should not call check function when force is true', async () => {
 		const fn = vi.fn(() => true);
 
-		const { open } = await import('./index.js');
+		const { openRbxl } = await import('./index.js');
 
-		await open(testPlaceFile, { ...options, checkFn: fn, force: true });
+		await openRbxl(testPlaceFile, { ...options, force: true, handleCheck: fn });
 
 		expect(fn).not.toHaveBeenCalled();
 	});
@@ -93,9 +111,9 @@ describe('log', () => {
 	it('should log before calling spawn function', async () => {
 		const fn = vi.fn(async () => {});
 
-		const { open } = await import('./index.js');
+		const { openRbxl } = await import('./index.js');
 
-		await open(testPlaceFile, { ...options, _spawnFn: fn, force: true });
+		await openRbxl(testPlaceFile, { ...options, force: true, handleSpawn: fn });
 
 		expect(console.log).toHaveBeenCalledWith('[open-rbxl] Opening Roblox Studio...');
 	});
@@ -103,9 +121,9 @@ describe('log', () => {
 	it('should log when check function is called and returns true', async () => {
 		const fn = vi.fn(() => true);
 
-		const { open } = await import('./index.js');
+		const { openRbxl } = await import('./index.js');
 
-		await open(testPlaceFile, { ...options, checkFn: fn, force: false });
+		await openRbxl(testPlaceFile, { ...options, force: false, handleCheck: fn });
 
 		expect(console.log).toHaveBeenCalledWith('[open-rbxl] Roblox Studio is already open');
 	});
@@ -113,9 +131,9 @@ describe('log', () => {
 	it("should not log when check function is called and doesn't return true", async () => {
 		const fn = vi.fn(() => false);
 
-		const { open } = await import('./index.js');
+		const { openRbxl } = await import('./index.js');
 
-		await open(testPlaceFile, { ...options, checkFn: fn, force: false });
+		await openRbxl(testPlaceFile, { ...options, force: false, handleCheck: fn });
 
 		expect(console.log).not.toHaveBeenCalledWith('[open-rbxl] Roblox Studio is already open');
 	});
@@ -127,9 +145,9 @@ describe('log parameter', () => {
 		const checkFn = vi.fn(() => false);
 		const spawnFn = vi.fn(async () => {});
 
-		const { open } = await import('./index.js');
+		const { openRbxl } = await import('./index.js');
 
-		await open(testPlaceFile, { _spawnFn: spawnFn, checkFn: checkFn, force: false, log: logFn });
+		await openRbxl(testPlaceFile, { force: false, handleCheck: checkFn, handleSpawn: spawnFn, log: logFn });
 
 		expect(logFn).toHaveBeenCalledWith('[open-rbxl] Opening Roblox Studio...');
 	});
@@ -139,9 +157,9 @@ describe('log parameter', () => {
 		const checkFn = vi.fn(() => true);
 		const spawnFn = vi.fn(async () => {});
 
-		const { open } = await import('./index.js');
+		const { openRbxl } = await import('./index.js');
 
-		await open(testPlaceFile, { _spawnFn: spawnFn, checkFn: checkFn, force: false, log: logFn });
+		await openRbxl(testPlaceFile, { force: false, handleCheck: checkFn, handleSpawn: spawnFn, log: logFn });
 
 		expect(logFn).toHaveBeenCalledWith('[open-rbxl] Roblox Studio is already open');
 	});

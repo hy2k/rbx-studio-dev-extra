@@ -1,13 +1,12 @@
-import { spawn } from 'node:child_process';
 import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
-import { getRobloxStudioPath } from 'roblox-studio-pathutil';
+import { extname } from 'node:path';
+
+import type { HandleSpawn } from './spawn.js';
 
 import { OpenRbxlError } from './errors.js';
+import { spawnRobloxStudio } from './spawn.js';
 
 export * from './errors.js';
-
-const ENV_VAR_ROBLOX_STUDIO_PATH = 'ROBLOX_STUDIO_PATH';
 
 async function checkStudioOpen(placePath: string): Promise<boolean> {
 	// Assumming if a lock file is there, studio is open. Maybe there is a better approach.
@@ -23,38 +22,28 @@ async function checkStudioOpen(placePath: string): Promise<boolean> {
 	}
 	return false;
 }
-async function spawnRobloxStudio(placePath: string) {
-	const robloxStudioRoot = process.env[ENV_VAR_ROBLOX_STUDIO_PATH];
-	const robloxStudioPath = await getRobloxStudioPath(robloxStudioRoot ? path.resolve(robloxStudioRoot) : undefined);
-
-	const child = spawn(robloxStudioPath.application, [placePath], {
-		detached: true,
-		stdio: 'ignore',
-	});
-	child.unref();
-}
 
 export interface RbxlOptions {
-	/**
-	 * Allows dependency injection for testing.
-	 *
-	 * @internal
-	 */
-	_spawnFn?: typeof spawnRobloxStudio;
-
-	/**
-	 * Custom function to check if Roblox Studio is already open.
-	 *
-	 * Defaults to checking for a lock file.
-	 */
-	checkFn?: (placePath: string) => Promise<boolean> | boolean;
-
 	/**
 	 * Force open Roblox Studio even if it is already open.
 	 *
 	 * Defaults to `false`.
 	 */
 	force?: boolean;
+
+	/**
+	 * Custom function to check if Roblox Studio is already open.
+	 *
+	 * Checks for a *.rbxl.lock file by default.
+	 */
+	handleCheck?: (placePath: string) => Promise<boolean> | boolean;
+
+	/**
+	 * Function to spawn Roblox Studio.
+	 *
+	 * Calls `process.spawn` by default.
+	 */
+	handleSpawn?: HandleSpawn;
 
 	/**
 	 * Function to log messages.
@@ -64,15 +53,18 @@ export interface RbxlOptions {
 	log?: (message: string) => void;
 }
 
-export async function open(
+export async function openRbxl(
 	placePath: string,
-	{ _spawnFn = spawnRobloxStudio, checkFn = checkStudioOpen, force = false, log = console.log }: RbxlOptions,
+	{ force = false, handleCheck = checkStudioOpen, handleSpawn = spawnRobloxStudio, log = console.log }: RbxlOptions,
 ) {
-	// Check if the place file exists
 	try {
 		const stat = await fs.stat(placePath);
 		if (!stat.isFile()) {
 			throw new OpenRbxlError('Not a file');
+		}
+
+		if (!extname(placePath).match(/\.rbxlx?/)) {
+			throw new OpenRbxlError('Must be a .rbxl or .rbxlx file');
 		}
 	} catch (err) {
 		if (err instanceof OpenRbxlError) {
@@ -82,12 +74,12 @@ export async function open(
 	}
 
 	if (!force) {
-		if (await checkFn(placePath)) {
+		if (await handleCheck(placePath)) {
 			log('[open-rbxl] Roblox Studio is already open');
 			return;
 		}
 	}
 
 	log('[open-rbxl] Opening Roblox Studio...');
-	return _spawnFn(placePath);
+	return handleSpawn(placePath);
 }
