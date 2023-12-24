@@ -4,14 +4,13 @@ import { getRobloxStudioPath } from 'roblox-studio-pathutil';
 
 import { logger } from './logger.js';
 
-const robloxStudioRoot = process.env.ROBLOX_STUDIO_PATH;
 const fileName = 'run-in-roblox-studio.rbxm';
 
 const dirname = path.dirname(new URL(import.meta.url).pathname);
 const pluginSrc = path.join(dirname, '..', 'plugin', fileName);
 
 export async function copyPlugin() {
-	const robloxStudioPath = await getRobloxStudioPath(robloxStudioRoot ? path.resolve(robloxStudioRoot) : undefined);
+	const robloxStudioPath = await getRobloxStudioPath();
 
 	const dest = path.join(robloxStudioPath.plugins, fileName);
 

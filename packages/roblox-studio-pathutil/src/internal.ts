@@ -2,6 +2,7 @@ import * as fs from 'node:fs/promises';
 
 import type { RobloxStudioPath } from './type.js';
 
+import { ROBLOX_STUDIO_PATH } from './constants.js';
 import { InvalidStudioRootError, PlatformNotSupportedError } from './errors.js';
 import { getRobloxStudioPathMac, getRobloxStudioRootMac } from './platform/mac.js';
 import { getDefaultStudioRootWindows, getRobloxStudioPathWindows } from './platform/windows.js';
@@ -39,6 +40,15 @@ export async function getRobloxStudioPathInternal({
 	platform: NodeJS.Platform;
 	studioRoot?: string;
 }): Promise<RobloxStudioPath> {
+	if (!studioRoot) {
+		const envStudioRoot = process.env[ROBLOX_STUDIO_PATH];
+		// vistest stubEnv only accepts string, but unstubbing is not reliable since this env can
+		// exist on dev machine
+		if (envStudioRoot?.trim() !== '') {
+			studioRoot = process.env[ROBLOX_STUDIO_PATH];
+		}
+	}
+
 	switch (platform) {
 		case 'win32': {
 			await validateStudioRoot(studioRoot);

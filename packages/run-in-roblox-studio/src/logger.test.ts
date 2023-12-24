@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('logger', () => {
-	const originalNodeEnv = process.env;
+	const originalEnv = process.env;
 
 	beforeEach(() => {
 		// Module registry is cached between tests, so reset or NODE_ENV will stay the same between
@@ -10,11 +10,11 @@ describe('logger', () => {
 	});
 
 	afterEach(() => {
-		process.env = originalNodeEnv;
+		process.env = originalEnv;
 	});
 
 	it('should have level "trace" and transport defined when NODE_ENV is "development"', async () => {
-		process.env = { ...originalNodeEnv, NODE_ENV: 'development' };
+		process.env = { ...originalEnv, NODE_ENV: 'development' };
 
 		const { loggerOption } = await import('./logger.js');
 
@@ -23,7 +23,7 @@ describe('logger', () => {
 	});
 
 	it('should have level "warn" and transport undefined when NODE_ENV is not "development"', async () => {
-		process.env = { ...originalNodeEnv, NODE_ENV: undefined };
+		process.env = { ...originalEnv, NODE_ENV: undefined };
 
 		const { loggerOption } = await import('./logger.js');
 

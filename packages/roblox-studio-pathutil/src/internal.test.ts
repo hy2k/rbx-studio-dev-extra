@@ -1,31 +1,34 @@
-import type { IFs } from 'memfs';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { Volume, createFsFromVolume } from 'memfs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
+import { ROBLOX_STUDIO_PATH } from './constants.js';
 import { InvalidStudioRootError, PlatformNotSupportedError } from './errors.js';
+import * as windows from './platform/windows.js';
 
-let vol: InstanceType<typeof Volume>;
-let fs: IFs['promises'];
+const getDefaultStudioRootWindows = vi.spyOn(windows, 'getDefaultStudioRootWindows');
+const getRobloxStudioPathWindows = vi.spyOn(windows, 'getRobloxStudioPathWindows');
 
-const getRobloxStudioPathWindows = vi.fn();
-const getDefaultStudioRootWindows = vi.fn();
+const originalEnv = process.env;
 
 beforeEach(() => {
 	vi.resetAllMocks();
 
-	vol = Volume.fromNestedJSON({
-		Roblox: {},
-		'file.txt': '',
+	vi.stubEnv(ROBLOX_STUDIO_PATH, "");
+
+	vi.mock('node:fs/promises', async () => {
+		const { Volume, createFsFromVolume } = await import('memfs');
+
+		const vol = Volume.fromNestedJSON({
+			Roblox: {},
+			'file.txt': '',
+		});
+
+		const fs = createFsFromVolume(vol).promises;
+		return fs;
 	});
+});
 
-	fs = createFsFromVolume(vol).promises;
-	vi.mock('node:fs/promises', () => fs);
-
-	vi.mock('./platform/windows.js', () => ({
-		getDefaultStudioRootWindows: getDefaultStudioRootWindows,
-		getRobloxStudioPathWindows: getRobloxStudioPathWindows,
-	}));
+afterEach(() => {
+	process.env = originalEnv;
 });
 
 describe('Windows', () => {
@@ -72,7 +75,7 @@ describe('Windows', () => {
 		});
 
 		expect(getDefaultStudioRootWindows).toHaveBeenCalledTimes(1);
-		expect(getRobloxStudioPathWindows).toHaveBeenCalledWith(getDefaultStudioRootWindows());
+		expect(getRobloxStudioPathWindows).toHaveBeenCalledWith(getDefaultStudioRootWindows.getMockImplementation()?.());
 	});
 
 	it('should not call default root when studio root is provided', async () => {
@@ -135,6 +138,19 @@ describe('WSL', () => {
 			isWsl: true,
 			platform: 'linux',
 			studioRoot: 'Roblox',
+		});
+
+		expect(getRobloxStudioPathWindows).toHaveBeenCalledTimes(1);
+		expect(getRobloxStudioPathWindows).toHaveBeenCalledWith('Roblox');
+	});
+
+	it('should not throw when environment variable for studio root is provided', async () => {
+		vi.stubEnv(ROBLOX_STUDIO_PATH, 'Roblox');
+
+		const { getRobloxStudioPathInternal } = await import('./internal.js');
+		await getRobloxStudioPathInternal({
+			isWsl: true,
+			platform: 'linux',
 		});
 
 		expect(getRobloxStudioPathWindows).toHaveBeenCalledTimes(1);
