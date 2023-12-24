@@ -12,7 +12,7 @@ npm install open-rbxl
 ## Usage
 
 ```js
-import { open } from 'open-rbxl';
+import { openRbxl } from 'open-rbxl';
 
-await open('./place.rbxl');
+await openRbxl('./place.rbxl');
 ```

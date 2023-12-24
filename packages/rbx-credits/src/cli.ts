@@ -1,6 +1,6 @@
 import { cli as cleye } from 'cleye';
 import * as fs from 'node:fs';
-import { open } from 'open-rbxl';
+import { openRbxl } from 'open-rbxl';
 
 import pkg from '../package.json' with { type: 'json' };
 import { startServer } from './index.js';
@@ -54,6 +54,10 @@ startServer(port).catch((err) => {
 	logger.fatal(err);
 });
 
-open(placePath, {}).catch((err) => {
+openRbxl(placePath, {
+	log: (message) => {
+		logger.info(message);
+	},
+}).catch((err) => {
 	logger.fatal(err);
 });

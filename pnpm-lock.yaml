@@ -78,8 +78,8 @@ importers:
         specifier: ^1.1.3
         version: 1.1.3
       open-rbxl:
-        specifier: ^0.0.4
-        version: 0.0.4
+        specifier: ^0.0.5
+        version: 0.0.5
       pino:
         specifier: ^8.17.1
         version: 8.17.1
@@ -118,8 +118,8 @@ importers:
         specifier: ^4.25.0
         version: 4.25.1
       open-rbxl:
-        specifier: ^0.0.4
-        version: 0.0.4
+        specifier: ^0.0.5
+        version: 0.0.5
       pino:
         specifier: ^8.17.1
         version: 8.17.1
@@ -2674,12 +2674,12 @@ packages:
       mimic-fn: 4.0.0
     dev: true
 
-  /open-rbxl@0.0.4:
-    resolution: {integrity: sha512-OOxs6jU6dbaihnsrc5M8fNqk2AHMZ60KugvnN8f0LOPjQvl0Sq+WaSDjAaGR9NM1CkngiWp76gNL9kGUB0hF9A==}
+  /open-rbxl@0.0.5:
+    resolution: {integrity: sha512-eJWB0gzGwN/UdMNqxJ+0B/uqJX/tA11WHStj/Sf3DVuMA7usW31+gbh0OSC+Fa+cOcrGns8uUrtJsZQ4YSpOKw==}
     hasBin: true
     dependencies:
       cleye: 1.3.2
-      roblox-studio-pathutil: 0.0.3
+      roblox-studio-pathutil: 0.0.4
     dev: false
 
   /optionator@0.9.3:
@@ -3005,12 +3005,6 @@ packages:
     dependencies:
       glob: 10.3.10
     dev: true
-
-  /roblox-studio-pathutil@0.0.3:
-    resolution: {integrity: sha512-n1/yRMcjGD7s/wYGtzKUn5kZ/sqW26n4FWo5YbKb0XVMWyOdWlFfnGhIrKLjqQt9j1zUdNrllfa5RHvz70r74g==}
-    dependencies:
-      is-wsl: 3.1.0
-    dev: false
 
   /roblox-studio-pathutil@0.0.4:
     resolution: {integrity: sha512-7dzURKLckpJFTVLA2auCfRp0RCZbZLYyW88jtn2YYLivjxnDg2BdOMh8xbJR0SpnTzLoN3Jt9WO4IrKGsjgKeQ==}
