@@ -111,10 +111,23 @@ describe('stop', () => {
 
 		const response = await server.inject({
 			method: 'POST',
+			payload: { isError: false },
 			url: '/stop',
 		});
 
 		expect(response.statusCode).toBe(204);
+	});
+
+	it('should return 400 when isError is not provided', async () => {
+		const server = await getTestServer();
+
+		const response = await server.inject({
+			method: 'POST',
+			payload: {},
+			url: '/stop',
+		});
+
+		expect(response.statusCode).toBe(400);
 	});
 
 	it('should exit the process after send', async () => {
@@ -122,9 +135,22 @@ describe('stop', () => {
 
 		await server.inject({
 			method: 'POST',
+			payload: { isError: false },
 			url: '/stop',
 		});
 
 		expect(process.exit).toHaveBeenCalledWith(0);
+	});
+
+	it('should exit the process with code 1 when isError is true', async () => {
+		const server = await getTestServer();
+
+		await server.inject({
+			method: 'POST',
+			payload: { isError: true },
+			url: '/stop',
+		});
+
+		expect(process.exit).toHaveBeenCalledWith(1);
 	});
 });

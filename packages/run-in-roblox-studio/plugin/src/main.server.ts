@@ -1,13 +1,9 @@
-import { HttpService, RunService } from '@rbxts/services';
+import { RunService } from '@rbxts/services';
 import { setInterval } from '@rbxts/set-timeout';
-import { t } from '@rbxts/t';
+import { requestLuaSource, requestStop } from 'http';
 
 import { config } from './config';
 import { debuglog, debugwarn } from './debug';
-
-const SERVER_URL = `http://127.0.0.1:${config.port}`;
-
-const getURL = (route: string) => `${SERVER_URL}/${route}`;
 
 function main() {
 	debuglog('Started with debug mode enabled');
@@ -19,9 +15,9 @@ function main() {
 			return;
 		}
 
-		const [ok, response] = pcall(start);
+		const [ok, luaSource] = pcall(requestLuaSource);
 		if (!ok) {
-			debugwarn(response);
+			debugwarn(luaSource);
 			return;
 		}
 
@@ -29,13 +25,16 @@ function main() {
 
 		debuglog('Request to start completed.');
 
-		const source = bodyParser(response);
-
-		runScript(source);
-
-		debuglog('Script finished, stopping server');
-
-		stop();
+		let isError = false;
+		try {
+			runScript(luaSource);
+			debuglog('Script finished, stopping server');
+		} catch (error) {
+			debugwarn(error);
+			isError = true;
+		} finally {
+			requestStop(isError);
+		}
 	}, config.pollInterval);
 }
 
@@ -49,66 +48,22 @@ function createModuleScript(source: string) {
 	return module;
 }
 
-function start() {
-	const [ok, response] = pcall(() => {
-		return HttpService.RequestAsync({
-			Body: HttpService.JSONEncode({
-				placeName: game.Name,
-			}),
-			Headers: {
-				['Content-Type']: 'application/json',
-			},
-			Method: 'POST',
-			Url: getURL('start'),
-		});
-	});
-
-	if (!ok) {
-		throw response;
-	}
-
-	if (!response.Success) {
-		throw response;
-	}
-
-	return response;
-}
-
 function runScript(source: string) {
 	const module = createModuleScript(source);
 
-	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	const fn = require(module);
+	const [ok, fn] = pcall(require, module);
+	if (!ok) {
+		throw fn;
+	}
 
 	if (typeIs(fn, 'function')) {
 		fn();
-	} else {
-		// This should never happen or error in createModuleScript function
-		throw 'Module did not return a function';
+
+		return;
 	}
-}
 
-function bodyParser(response: RequestAsyncResponse) {
-	const body = HttpService.JSONDecode(response.Body);
-	const bodyCheck = t.strictInterface({
-		source: t.string,
-	});
-	assert(bodyCheck(body));
-
-	const { source } = body;
-
-	return source;
-}
-
-function stop() {
-	const response = HttpService.RequestAsync({
-		Method: 'POST',
-		Url: getURL('stop'),
-	});
-
-	if (!response.Success) {
-		throw 'Failed to stop';
-	}
+	// This should never happen or error in createModuleScript function
+	throw 'Module did not return a function';
 }
 
 if (RunService.IsStudio() && RunService.IsEdit()) {

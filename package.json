@@ -2,7 +2,7 @@
 	"name": "rbx-studio-dev-extra",
 	"private": true,
 	"type": "module",
-	"version": "0.0.1",
+	"version": "0.0.0",
 	"license": "MIT",
 	"devDependencies": {
 		"@rbxts/compiler-types": "^2.2.0-types.0",

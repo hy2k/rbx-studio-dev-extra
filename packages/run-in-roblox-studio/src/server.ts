@@ -12,7 +12,6 @@ export function getServer(options?: FastifyServerOptions) {
 		{
 			schema: {
 				body: {
-					additionalProperties: false,
 					properties: {
 						placeName: {
 							type: 'string',
@@ -38,14 +37,32 @@ export function getServer(options?: FastifyServerOptions) {
 		},
 	);
 
-	fastify.post('/stop', async (_request, reply) => {
-		return reply.status(204).send();
-	});
+	fastify.post(
+		'/stop',
+		{
+			schema: {
+				body: {
+					properties: {
+						isError: {
+							type: 'boolean',
+						},
+					},
+					required: ['isError'],
+					type: 'object',
+				},
+			},
+		},
+		async (_request, reply) => {
+			return reply.status(204).send();
+		},
+	);
 
 	fastify.addHook('onResponse', (request, _reply, done) => {
 		if (request.url === '/stop' && request.method === 'POST') {
+			const data = request.body as { isError: boolean };
+			const exitCode = data.isError ? 1 : 0;
 			process.nextTick(() => {
-				process.exit(0);
+				process.exit(exitCode);
 			});
 		}
 		done();

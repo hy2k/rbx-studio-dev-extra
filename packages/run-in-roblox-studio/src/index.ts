@@ -41,9 +41,11 @@ export async function start({ placePath, port, scriptPath }: StartOptions) {
 process.on('SIGINT', () => {
 	logger.info('SIGINT received, closing server');
 
-	cleanupPlugin();
-
 	void server.close();
 
-	process.exit(0);
+	process.exit();
+});
+
+process.on('exit', () => {
+	cleanupPlugin();
 });
