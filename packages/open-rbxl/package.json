@@ -1,7 +1,7 @@
 {
 	"name": "open-rbxl",
 	"description": "Open rbxl/rbxlx place file in Roblox Studio",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"type": "module",
 	"main": "dist/index.js",
 	"bin": {
