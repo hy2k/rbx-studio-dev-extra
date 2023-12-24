@@ -1,10 +1,10 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { getAssetIdsFromData } from './asset-id-parser.js';
 import { logger } from './logger.js';
 
-afterEach(() => {
-	vi.clearAllMocks();
+beforeEach(() => {
+	vi.resetAllMocks();
 });
 
 vi.spyOn(logger, 'warn').mockImplementation(() => {});

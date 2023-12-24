@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ROBLOX_STUDIO_PATH } from './constants.js';
 import { InvalidStudioRootError, PlatformNotSupportedError } from './errors.js';
@@ -7,28 +7,22 @@ import * as windows from './platform/windows.js';
 const getDefaultStudioRootWindows = vi.spyOn(windows, 'getDefaultStudioRootWindows');
 const getRobloxStudioPathWindows = vi.spyOn(windows, 'getRobloxStudioPathWindows');
 
-const originalEnv = process.env;
+vi.mock('node:fs/promises', async () => {
+	const { Volume, createFsFromVolume } = await import('memfs');
+
+	const vol = Volume.fromNestedJSON({
+		Roblox: {},
+		'file.txt': '',
+	});
+
+	const fs = createFsFromVolume(vol).promises;
+	return fs;
+});
 
 beforeEach(() => {
 	vi.resetAllMocks();
 
-	vi.stubEnv(ROBLOX_STUDIO_PATH, "");
-
-	vi.mock('node:fs/promises', async () => {
-		const { Volume, createFsFromVolume } = await import('memfs');
-
-		const vol = Volume.fromNestedJSON({
-			Roblox: {},
-			'file.txt': '',
-		});
-
-		const fs = createFsFromVolume(vol).promises;
-		return fs;
-	});
-});
-
-afterEach(() => {
-	process.env = originalEnv;
+	vi.stubEnv(ROBLOX_STUDIO_PATH, '');
 });
 
 describe('Windows', () => {

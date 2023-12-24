@@ -1,6 +1,3 @@
-import type { IFs } from 'memfs';
-
-import { Volume, createFsFromVolume } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { RbxlOptions } from './index.js';
@@ -15,27 +12,29 @@ const options: Readonly<RbxlOptions> = {
 
 vi.spyOn(console, 'log');
 
-let vol: InstanceType<typeof Volume>;
-let fs: IFs['promises'];
+vi.mock('node:child_process');
 
-beforeEach(() => {
-	vi.resetAllMocks();
+vi.mock('node:fs/promises', async () => {
+	const { Volume, createFsFromVolume } = await import('memfs');
 
-	vol = Volume.fromNestedJSON({
+	const vol = Volume.fromNestedJSON({
 		folder: {},
 		'not-place.rbxm': '',
 		'place.rbxl': '',
 		'place.rbxlx': '',
 	});
 
-	fs = createFsFromVolume(vol).promises;
-	vi.mock('node:fs/promises', () => fs);
+	return createFsFromVolume(vol).promises;
+});
+
+beforeEach(() => {
+	vi.resetAllMocks();
 });
 
 const testPlaceFile = 'place.rbxl';
 
 describe('spawn', () => {
-	it('should call spawn function when force is true', async () => {
+	it('should call spawn function from param when force is true', async () => {
 		const fn = vi.fn(async () => {});
 
 		const { openRbxl } = await import('./index.js');

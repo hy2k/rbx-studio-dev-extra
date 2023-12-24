@@ -1,17 +1,11 @@
-import type { IFs } from 'memfs';
-
-import { Volume, createFsFromVolume } from 'memfs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { InvalidStudioRootError, StudioNotInstalledError } from '../errors.js';
 
-let vol: InstanceType<typeof Volume>;
-let fs: IFs['promises'];
+vi.mock('node:fs/promises', async () => {
+	const { Volume, createFsFromVolume } = await import('memfs');
 
-beforeEach(() => {
-	vi.resetAllMocks();
-
-	vol = Volume.fromNestedJSON({
+	const vol = Volume.fromNestedJSON({
 		Roblox: {
 			Versions: {
 				'version-hash1': {
@@ -31,8 +25,11 @@ beforeEach(() => {
 		'no-version-dir': {},
 	});
 
-	fs = createFsFromVolume(vol).promises;
-	vi.mock('node:fs/promises', () => fs);
+	return createFsFromVolume(vol).promises;
+});
+
+beforeEach(() => {
+	vi.resetAllMocks();
 });
 
 describe('getRobloxStudioPathWindows', () => {
