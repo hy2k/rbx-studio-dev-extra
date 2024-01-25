@@ -33,16 +33,18 @@ describe('start', () => {
 
 		const server = await getTestServer();
 
+		const placeName = `Place${Math.random()}`;
+
 		const response = await server.inject({
 			method: 'POST',
 			payload: {
-				placeName: 'other place',
+				placeName: placeName,
 			},
 			url: '/start',
 		});
 
 		expect(response.statusCode).toBe(400);
-		expect(response.body).toBe('Skipping request from other place');
+		expect(response.body).toBe(`Skipping request from a place: ${placeName}`);
 	});
 
 	it('should return status 200 when placeName is provided', async () => {

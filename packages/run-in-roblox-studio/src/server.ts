@@ -28,7 +28,7 @@ export function getServer(options?: FastifyServerOptions) {
 			if (data.placeName !== store.placeName) {
 				// Multiple studio instances may be running at the same time. Ignore requests from other
 				// instances.
-				return reply.status(400).send(`Skipping request from ${data.placeName}`);
+				return reply.status(400).send(`Skipping request from a place: ${data.placeName}`);
 			}
 
 			return reply.status(200).send({

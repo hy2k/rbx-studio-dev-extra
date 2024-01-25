@@ -7,6 +7,7 @@ import { getServer } from './server.js';
 import { store } from './store.js';
 
 interface StartOptions {
+	placeName?: string;
 	placePath: string;
 	port: number;
 	scriptPath: string;
@@ -18,10 +19,10 @@ const server = getServer({
 	logger: logger,
 });
 
-export async function start({ placePath, port, scriptPath }: StartOptions) {
+export async function start({ placeName, placePath, port, scriptPath }: StartOptions) {
 	const luaSource = await readFile(scriptPath, 'utf8');
 	store.luaSource = luaSource;
-	store.placeName = basename(placePath);
+	store.placeName = placeName ?? basename(placePath);
 
 	copyPlugin()
 		.then((cleanup) => {

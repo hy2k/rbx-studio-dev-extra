@@ -16,6 +16,11 @@ function File(str: string) {
 
 const cli = cleye({
 	flags: {
+		name: {
+			alias: 'n',
+			description: 'Name of the place to use for the server',
+			type: String,
+		},
 		place: {
 			description: '(Required) Path to the place file to run in Roblox Studio',
 			placeholder: '<place.rbxl>',
@@ -37,7 +42,7 @@ const cli = cleye({
 	version: pkg.version,
 });
 
-const { place: placePath, port, script: scriptPath } = cli.flags;
+const { name: placeName, place: placePath, port, script: scriptPath } = cli.flags;
 
 if (!placePath || !scriptPath) {
 	cli.showHelp({
@@ -48,6 +53,7 @@ if (!placePath || !scriptPath) {
 }
 
 start({
+	placeName: placeName,
 	placePath: placePath,
 	port: port,
 	scriptPath: scriptPath,
