@@ -1,6 +1,6 @@
 {
 	"name": "run-in-roblox-studio",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"type": "module",
 	"bin": {
 		"run-in-roblox-studio": "bin/run-in-roblox-studio.mjs"
