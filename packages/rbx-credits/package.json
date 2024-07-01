@@ -31,12 +31,12 @@
 	"license": "MIT",
 	"dependencies": {
 		"cleye": "^1.3.2",
-		"fastify": "^4.25.0",
-		"ky": "^1.1.3",
+		"fastify": "^4.28.1",
+		"ky": "^1.4.0",
 		"open-rbxl": "^0.0.5",
-		"pino": "^8.17.1",
-		"pino-pretty": "^10.3.1",
+		"pino": "^9.2.0",
+		"pino-pretty": "^11.2.1",
 		"roblox-studio-pathutil": "^0.0.4",
-		"zod": "^3.22.4"
+		"zod": "^3.23.8"
 	}
 }

@@ -2,7 +2,7 @@
 
 import {
 	baseConfig,
-	ignores,
+	ignoresConfig,
 	importConfig,
 	perfConfig,
 	robloxConfig,
@@ -48,7 +48,7 @@ testConfig.rules = {
 /** @type {import("eslint").Linter.FlatConfig[]} */
 export default [
 	//
-	ignores,
+	ignoresConfig,
 
 	baseConfig,
 

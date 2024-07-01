@@ -17,7 +17,7 @@ const asset: Readonly<DeveloperProductInfo> = {
 
 vi.spyOn(logger, 'error').mockImplementation(() => {});
 vi.spyOn(logger, 'info').mockImplementation(() => {});
-vi.spyOn(process, 'exit').mockImplementation((_code?: number) => undefined as never);
+vi.spyOn(process, 'exit');
 
 const fs = await vi.hoisted(async () => {
 	const { Volume, createFsFromVolume } = await import('memfs');

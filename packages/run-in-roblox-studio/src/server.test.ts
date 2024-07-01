@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { store } from './store.js';
 
-vi.spyOn(process, 'exit').mockImplementation((_code?: number) => undefined as never);
+vi.spyOn(process, 'exit');
 
 vi.mock('./store.js', async (importOriginal) => {
 	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
