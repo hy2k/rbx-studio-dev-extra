@@ -5,7 +5,7 @@ import { config } from './config';
 
 const SERVER_URL = `http://127.0.0.1:${config.port}`;
 
-const post = (route: string, payload: object) => {
+const post = (route: string, payload: object): RequestAsyncResponse => {
 	const response = HttpService.RequestAsync({
 		Body: HttpService.JSONEncode(payload),
 		Headers: {
@@ -16,13 +16,13 @@ const post = (route: string, payload: object) => {
 	});
 
 	if (!response.Success) {
-		throw response;
+		error(response);
 	}
 
 	return response;
 };
 
-export function requestLuaSource() {
+export function requestLuaSource(): string {
 	const response = post('start', {
 		placeName: game.Name,
 	});
@@ -38,7 +38,7 @@ export function requestLuaSource() {
 	return source;
 }
 
-export function requestStop(isError: boolean) {
+export function requestStop(isError: boolean): void {
 	post('stop', {
 		isError: isError,
 	});

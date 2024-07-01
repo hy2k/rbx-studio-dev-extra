@@ -13,13 +13,13 @@ interface StartOptions {
 	scriptPath: string;
 }
 
-let cleanupPlugin = () => {};
+let cleanupPlugin = (): void => {};
 
 const server = getServer({
 	logger: logger,
 });
 
-export async function start({ placeName, placePath, port, scriptPath }: StartOptions) {
+export async function start({ placeName, placePath, port, scriptPath }: StartOptions): Promise<void> {
 	const luaSource = await readFile(scriptPath, 'utf8');
 	store.luaSource = luaSource;
 	store.placeName = placeName ?? basename(placePath);
@@ -28,7 +28,7 @@ export async function start({ placeName, placePath, port, scriptPath }: StartOpt
 		.then((cleanup) => {
 			cleanupPlugin = cleanup;
 		})
-		.catch((err) => {
+		.catch((err: unknown) => {
 			logger.fatal(err);
 		});
 

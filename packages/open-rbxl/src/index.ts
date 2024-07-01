@@ -56,7 +56,7 @@ export interface RbxlOptions {
 export async function openRbxl(
 	placePath: string,
 	{ force = false, handleCheck = checkStudioOpen, handleSpawn = spawnRobloxStudio, log = console.log }: RbxlOptions,
-) {
+): Promise<void> {
 	try {
 		const stat = await fs.stat(placePath);
 		if (!stat.isFile()) {

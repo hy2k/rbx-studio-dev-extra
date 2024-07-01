@@ -1,3 +1,5 @@
+import type { FastifyInstance } from 'fastify';
+
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { store } from './store.js';
@@ -21,7 +23,7 @@ beforeEach(() => {
 	store._reset();
 });
 
-async function getTestServer() {
+async function getTestServer(): Promise<FastifyInstance> {
 	const { getServer } = await import('./server.js');
 	return getServer();
 }

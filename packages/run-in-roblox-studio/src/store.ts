@@ -2,12 +2,12 @@ class Store {
 	#luaSource?: string;
 	#placeName?: string;
 
-	_reset() {
+	_reset(): void {
 		this.#luaSource = undefined;
 		this.#placeName = undefined;
 	}
 
-	get luaSource() {
+	get luaSource(): string {
 		if (!this.#luaSource) {
 			throw new Error('luaSource is not set');
 		}
@@ -21,7 +21,7 @@ class Store {
 		this.#luaSource = content;
 	}
 
-	get placeName() {
+	get placeName(): string {
 		if (!this.#placeName) {
 			throw new Error('placePath is not set');
 		}

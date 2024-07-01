@@ -8,7 +8,9 @@ import { Cache, getCachedDataPath } from './cache.js';
 import { logger } from './logger.js';
 import { DeveloperProductInfo } from './schema.js';
 
-const endpoint = (assetId: number) => `https://economy.roblox.com/v2/developer-products/${assetId}/info`;
+function endpoint(assetId: number): string {
+	return `https://economy.roblox.com/v2/developer-products/${assetId}/info`;
+}
 
 class FetchAssetInfoError extends Error {
 	constructor(string?: string, options?: ErrorOptions) {
@@ -17,7 +19,7 @@ class FetchAssetInfoError extends Error {
 	}
 }
 
-async function fetchAssetInfo(assetId: number) {
+async function fetchAssetInfo(assetId: number): Promise<DeveloperProductInfo> {
 	try {
 		logger.info(`Fetching asset info for ${assetId}`);
 		const response = await ky.get(endpoint(assetId)).json();
@@ -48,7 +50,7 @@ async function fetchAssetInfo(assetId: number) {
 	}
 }
 
-async function createAssetStore(data: object, cache: Cache) {
+async function createAssetStore(data: object, cache: Cache): Promise<AssetStore> {
 	const assetStore = new AssetStore();
 
 	for (const [property, assetIds] of getAssetIdsFromData(data)) {
@@ -67,7 +69,7 @@ async function createAssetStore(data: object, cache: Cache) {
 	return assetStore;
 }
 
-export async function emitAssetCredits(data: object) {
+export async function emitAssetCredits(data: object): Promise<void> {
 	let exitCode = 0;
 
 	const cachePath = await getCachedDataPath();

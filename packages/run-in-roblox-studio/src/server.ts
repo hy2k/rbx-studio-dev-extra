@@ -4,7 +4,7 @@ import Fastify from 'fastify';
 
 import { store } from './store.js';
 
-export function getServer(options?: FastifyServerOptions) {
+export function getServer(options?: FastifyServerOptions): Fastify.FastifyInstance {
 	const fastify = Fastify(options);
 
 	fastify.post(

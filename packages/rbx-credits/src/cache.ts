@@ -7,7 +7,7 @@ import { ZodError } from 'zod';
 import { logger } from './logger.js';
 import { DeveloperProductInfo } from './schema.js';
 
-export async function getCachedDataPath() {
+export async function getCachedDataPath(): Promise<string> {
 	// TODO: Allow custom cache path
 	const cacheDir = path.join(os.homedir(), '.cache', 'rbx-credits');
 
@@ -29,7 +29,7 @@ export class Cache {
 		this.#cachePath = cachePath;
 	}
 
-	findById(assetId: number) {
+	findById(assetId: number): DeveloperProductInfo | undefined {
 		return this.#data.find((data) => data.AssetId === assetId);
 	}
 
@@ -37,7 +37,7 @@ export class Cache {
 		try {
 			const content = await fs.readFile(this.#cachePath, 'utf-8');
 			this.#data = DeveloperProductInfo.array().parse(JSON.parse(content));
-		} catch (err) {
+		} catch (err: unknown) {
 			// instanceof check fails in jest environment
 			// See https://github.com/jestjs/jest/issues/2549
 			if (isNativeError(err)) {
@@ -66,7 +66,7 @@ export class Cache {
 		return this;
 	}
 
-	push(data: DeveloperProductInfo) {
+	push(data: DeveloperProductInfo): void {
 		// Prevents duplicate data
 		if (this.findById(data.AssetId)) {
 			return;
@@ -75,12 +75,12 @@ export class Cache {
 		this.#data.push(data);
 	}
 
-	async writeFile(writer = fs.writeFile) {
+	async writeFile(writer = fs.writeFile): Promise<void> {
 		await writer(this.#cachePath, JSON.stringify(this.#data), 'utf-8');
 		logger.info(`Completed writing ${this.#data.length} cached data`);
 	}
 
-	get data() {
+	get data(): DeveloperProductInfo[] {
 		return this.#data;
 	}
 }

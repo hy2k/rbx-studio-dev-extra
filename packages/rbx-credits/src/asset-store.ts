@@ -3,7 +3,7 @@ import type { DeveloperProductInfo } from './schema.js';
 export class AssetStore {
 	#data = new Map<string, DeveloperProductInfo[]>();
 
-	add(rbxProperty: string, asset: DeveloperProductInfo) {
+	add(rbxProperty: string, asset: DeveloperProductInfo): void {
 		const assets = this.getByProperty(rbxProperty);
 
 		if (assets.some((a) => a.AssetId === asset.AssetId)) {

@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { logger } from './logger.js';
 
-function parseStringAssetId(value: string) {
+function parseStringAssetId(value: string): number | undefined {
 	if (typeof value === 'number') {
 		return value;
 	}
@@ -21,7 +21,7 @@ function parseStringAssetId(value: string) {
 const RawAssetValue = z.union([z.number(), z.string().transform(parseStringAssetId)]);
 type RawAssetValue = z.infer<typeof RawAssetValue>;
 
-export function getAssetIdsFromData(data: object) {
+export function getAssetIdsFromData(data: object): Map<string, Set<number>> {
 	// Just checking object has shape of record. Here I don't want to use z.record(..) because I
 	// want to parse each property independently.
 	const resultRecord = z.object({}).safeParse(data);

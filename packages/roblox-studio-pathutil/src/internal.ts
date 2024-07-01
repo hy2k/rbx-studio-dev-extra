@@ -7,7 +7,7 @@ import { InvalidStudioRootError, PlatformNotSupportedError } from './errors.js';
 import { getRobloxStudioPathMac, getRobloxStudioRootMac } from './platform/mac.js';
 import { getDefaultStudioRootWindows, getRobloxStudioPathWindows } from './platform/windows.js';
 
-async function validateStudioRoot(studioRoot?: string) {
+async function validateStudioRoot(studioRoot?: string): Promise<void> {
 	if (studioRoot) {
 		// Make sure the studio root is a valid directory
 		try {

@@ -2,7 +2,7 @@ import { config } from './config';
 
 const PREFIX = '[rbx-in-roblox-studio]';
 
-export function debuglog(...args: unknown[]) {
+export function debuglog(...args: unknown[]): void {
 	if (!config.debugMode) {
 		return;
 	}
@@ -10,7 +10,7 @@ export function debuglog(...args: unknown[]) {
 	print(PREFIX, ...args);
 }
 
-export function debugwarn(...args: unknown[]) {
+export function debugwarn(...args: unknown[]): void {
 	if (!config.debugMode) {
 		return;
 	}

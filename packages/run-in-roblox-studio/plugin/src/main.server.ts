@@ -5,7 +5,7 @@ import { requestLuaSource, requestStop } from 'http';
 import { config } from './config';
 import { debuglog, debugwarn } from './debug';
 
-function main() {
+function main(): void {
 	debuglog('Started with debug mode enabled');
 
 	let isRunning = false;
@@ -38,7 +38,7 @@ function main() {
 	}, config.pollInterval);
 }
 
-function createModuleScript(source: string) {
+function createModuleScript(source: string): ModuleScript {
 	const module = new Instance('ModuleScript');
 
 	// Wrap in a function and return it to prevent the following error:
@@ -48,7 +48,7 @@ function createModuleScript(source: string) {
 	return module;
 }
 
-function runScript(source: string) {
+function runScript(source: string): void {
 	const module = createModuleScript(source);
 
 	const [ok, fn] = pcall(require, module);
@@ -63,7 +63,7 @@ function runScript(source: string) {
 	}
 
 	// This should never happen or error in createModuleScript function
-	throw 'Module did not return a function';
+	error('Module did not return a function');
 }
 
 if (RunService.IsStudio() && RunService.IsEdit()) {

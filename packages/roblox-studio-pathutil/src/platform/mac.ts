@@ -3,7 +3,7 @@ import * as path from 'node:path';
 
 import type { RobloxStudioPath } from '../type.js';
 
-export function getRobloxStudioRootMac() {
+export function getRobloxStudioRootMac(): string {
 	// FIXME: This is not tested
 	return path.join(homedir(), 'Library', 'Application Support', 'Roblox');
 }

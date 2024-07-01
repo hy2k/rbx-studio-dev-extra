@@ -41,7 +41,7 @@ fastify.post(
 		// is sent before the previous one is finished.
 		isStarted = true;
 
-		emitAssetCredits(data as object).catch((err) => {
+		emitAssetCredits(data as object).catch((err: unknown) => {
 			logger.fatal(err);
 		});
 

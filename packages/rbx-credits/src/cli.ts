@@ -9,7 +9,7 @@ import { copyPlugin } from './plugin.js';
 
 const DEFAULT_PORT = 11499;
 
-function File(str: string) {
+function File(str: string): string {
 	const stat = fs.statSync(str);
 	if (!stat.isFile()) {
 		throw new Error(`"${str}" is not a file`);
@@ -45,12 +45,12 @@ if (!placePath) {
 	process.exit(1);
 }
 
-copyPlugin().catch((err) => {
+copyPlugin().catch((err: unknown) => {
 	logger.fatal(err);
 	process.exit(1);
 });
 
-startServer(port).catch((err) => {
+startServer(port).catch((err: unknown) => {
 	logger.fatal(err);
 });
 
@@ -58,6 +58,6 @@ openRbxl(placePath, {
 	log: (message) => {
 		logger.info(message);
 	},
-}).catch((err) => {
+}).catch((err: unknown) => {
 	logger.fatal(err);
 });

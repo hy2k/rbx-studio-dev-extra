@@ -7,9 +7,11 @@ import { findAssets } from './find-assets';
 
 const SERVER_URL = `http://127.0.0.1:${config.port}`;
 
-const getURL = (route: string) => `${SERVER_URL}/${route}`;
+function getURL(route: string): string {
+	return `${SERVER_URL}/${route}`;
+}
 
-function poll() {
+function poll(): void {
 	try {
 		const response = HttpService.RequestAsync({
 			Method: 'GET',
@@ -17,7 +19,7 @@ function poll() {
 		});
 
 		if (!response.Success) {
-			throw 'Failed to poll';
+			error('Failed to poll');
 		}
 	} catch (err) {
 		debugwarn(err);
@@ -25,7 +27,7 @@ function poll() {
 	}
 }
 
-function main() {
+function main(): void {
 	debuglog('Started with debug mode enabled');
 
 	let skipPolling = false;
@@ -39,7 +41,7 @@ function main() {
 
 			skipPolling = true;
 
-			const promise = new Promise((resolve, reject) => {
+			const promise = Promise.try(() => {
 				const assets = findAssets();
 
 				const response = HttpService.RequestAsync({
@@ -52,15 +54,13 @@ function main() {
 				});
 
 				if (!response.Success) {
-					reject('Failed to submit');
+					error('Failed to submit');
 				}
-
-				resolve('Ok');
 			});
 
 			// Wait for CLI to remove the plugin
 			promise
-				.catch((err) => {
+				.catch((err: unknown) => {
 					error(err);
 				})
 				.finally(() => {

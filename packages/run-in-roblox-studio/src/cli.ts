@@ -6,7 +6,7 @@ import pkg from '../package.json' with { type: 'json' };
 import { start } from './index.js';
 import { logger } from './logger.js';
 
-function File(str: string) {
+function File(str: string): string {
 	const stat = fs.statSync(str);
 	if (!stat.isFile()) {
 		throw new Error(`"${str}" is not a file`);
@@ -57,7 +57,7 @@ start({
 	placePath: placePath,
 	port: port,
 	scriptPath: scriptPath,
-}).catch((err) => {
+}).catch((err: unknown) => {
 	logger.fatal(err);
 	process.exit(1);
 });
@@ -66,7 +66,7 @@ openRbxl(placePath, {
 	log: (message) => {
 		logger.info(message);
 	},
-}).catch((err) => {
+}).catch((err: unknown) => {
 	logger.fatal(err);
 	process.exit(1);
 });

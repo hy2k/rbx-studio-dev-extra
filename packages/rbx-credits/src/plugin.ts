@@ -9,7 +9,7 @@ const fileName = 'rbx-credits.rbxm';
 const dirname = path.dirname(new URL(import.meta.url).pathname);
 const pluginSrc = path.join(dirname, '..', 'plugin', fileName);
 
-export async function copyPlugin() {
+export async function copyPlugin(): Promise<void> {
 	const robloxStudioPath = await getRobloxStudioPath();
 
 	const dest = path.join(robloxStudioPath.plugins, fileName);

@@ -38,7 +38,7 @@ const CONTAINERS = [
 	StarterPlayer,
 ];
 
-function getInstanceAssets(instance: Instance) {
+function getInstanceAssets(instance: Instance): Map<string, RawAssetValue[]> {
 	const assets = new Map<string, RawAssetValue[]>();
 
 	const props = getAssetProperties(instance);
@@ -54,7 +54,7 @@ function getInstanceAssets(instance: Instance) {
 	return assets;
 }
 
-export function findAssets() {
+export function findAssets(): Map<string, RawAssetValue[]> {
 	const assets = new Map<string, RawAssetValue[]>();
 
 	for (const container of CONTAINERS) {
